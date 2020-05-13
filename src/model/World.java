@@ -26,7 +26,13 @@ class World {
 		argentina.addNeighbour(chile);
 		chile.addNeighbour(colombia);
 		
+		
 		continents[0] = new Continent("South America", new Territory[] { brazil, argentina, colombia, chile }, 4, Color.GREEN);
+		
+		brazil.setContinent(continents[0]);
+		argentina.setContinent(continents[0]);
+		colombia.setContinent(continents[0]);
+		chile.setContinent(continents[0]);		
 	
 		// Oceania:
 		Territory australia = new Territory("Australia");
@@ -40,6 +46,11 @@ class World {
 		borneo.addNeighbour(newGuinea);
 		
 		continents[1] = new Continent("Oceania", new Territory[] { australia, newGuinea, borneo, sumatra }, 2, Color.RED);
+		
+		australia.setContinent(continents[1]);
+		newGuinea.setContinent(continents[1]);
+		borneo.setContinent(continents[1]);
+		sumatra.setContinent(continents[1]);
 		
 		territoryCount = 8;
 	}
