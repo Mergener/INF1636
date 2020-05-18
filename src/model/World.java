@@ -24,8 +24,7 @@ class World {
 		brazil.addNeighbour(chile);
 		brazil.addNeighbour(colombia);
 		argentina.addNeighbour(chile);
-		chile.addNeighbour(colombia);
-		
+		chile.addNeighbour(colombia);		
 		
 		continents[0] = new Continent("South America", new Territory[] { brazil, argentina, colombia, chile }, 4, Color.GREEN);
 		
@@ -57,6 +56,16 @@ class World {
 	
 	public int getTerritoryCount() {
 		return territoryCount;
+	}
+	
+	public Territory findTerritory(String name) {
+		for (Continent c : continents) {
+			Territory t = c.findTerritory(name);
+			if (t != null) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 	private static World instance = new World();

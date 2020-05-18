@@ -1,13 +1,16 @@
 package model;
 
+import java.util.Collection;
 import java.awt.Color;
+import java.util.Hashtable;
 
 class Continent {
 	
 	private String name;
-	private Territory[] territories;
 	private Color color;
 	private int value;
+	
+	private Hashtable<String, Territory> territories = new Hashtable<String, Territory>();
 	
 	public String getName() {
 		return name;
@@ -21,14 +24,21 @@ class Continent {
 		return value;
 	}
 	
-	public Territory[] getTerritories() {
-		return territories;
+	public Collection<Territory> getTerritories() {
+		return territories.values();
+	}
+	
+	public Territory findTerritory(String name) {
+		return territories.get(name);
 	}
 	
 	public Continent(String name, Territory[] territories, int value, Color color) {
 		this.name = name;
-		this.territories = territories;
 		this.value = value;
 		this.color = color;
+		
+		for (Territory t : territories) {
+			this.territories.put(t.getName(), t);
+		}
 	}
 }

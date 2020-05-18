@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Hashtable;
 import java.util.ArrayList;
@@ -14,6 +15,27 @@ class Match {
 	 */
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
+	public List<Player> getPlayers() {
+		return Collections.unmodifiableList(players);
+	}
+	
+	private MatchState state;
+	public MatchState getState() {
+		return state;
+	}
+	
+	public void setState(MatchState state) {
+		if (this.state != null) {
+			this.state.onFinish();
+		}
+		
+		this.state = state;
+		
+		if (this.state != null) {
+			this.state.onBegin();
+		}
+	}
+
 	/*
 	 * @brief Randomly sorts players array.
 	 */
@@ -22,77 +44,14 @@ class Match {
 		
 		for (int i = 0; i < players.size(); ++i) {
 			Player p = players.get(i);
-			int rand = random.nextInt() % players.size();
+			int rand = random.nextInt(players.size());
 			players.set(i, players.get(rand));
 			players.set(rand, p);
 		}
 	}
-	
-	private void giveRandomObjectivesToPlayers(List<IObjective> availableObjectives) {
-		ArrayList<IObjective> objectives = new ArrayList<IObjective>(availableObjectives);
-		Random random = new Random();
 		
-		for (int i = 0; i < players.size(); ++i) {
-			int rand = random.nextInt() % objectives.size();
-			
-			players.get(i).setObjective(objectives.get(rand));
-			objectives.remove(rand);
-		}
-	}
-	
-	private void giveRandomTerritoriesToPlayers(World world) {
-		// The following hashtables links players to the number of territories they can still receive during
-		// this phase of territory distribution.
-		Hashtable<Player, Integer> playersTerritoryCount = new Hashtable<Player, Integer>();
-		
-		// The following array list contains all players who are still receiving territories during this phase of
-		// territory distribution.
-		ArrayList<Player> sortingPlayers = new ArrayList<Player>(players);
-		Random random = new Random();
-		
-		int territoriesPerPlayer = world.getTerritoryCount() / players.size();
-		int remainder = world.getTerritoryCount() % players.size();
-		
-		// The number of territories in the world might not be a multiple of the number of players in the match. 
-		// Thus, considering the fact that all territories must have an owner, the remainder 'r' of the division is
-		// distributed among the first 'r' players. This might not be the fairmost solution, but it is chosen since
-		// this is the approach taken by the official War game.
-		for (int i = 0; i < players.size(); ++i) {
-			int amt = territoriesPerPlayer;
-			
-			if (remainder > 0) {
-				amt++;
-				remainder--;
-			}
-			
-			playersTerritoryCount.put(players.get(i), amt);
-		}
-		
-		// For every territory in the world, set its owner to a random player that is still
-		// eligible for receiving more territories.
-		for (Continent c : world.getContinents()) {
-			for (Territory t : c.getTerritories()) {
-				int rand = random.nextInt() % sortingPlayers.size();
-				
-				Player p = sortingPlayers.get(rand);
-				int val = playersTerritoryCount.get(p);
-				
-				if (val == 1) {
-					// If val == 1, this is the last territory this player is getting.
-					sortingPlayers.remove(rand);
-				} else {
-					playersTerritoryCount.replace(p, val - 1);
-				}
-				
-				p.addTerritory(t);
-			}
-		}
-	}
-	
-	public void start(List<IObjective> availableObjectives, World world) {
-		randomizePlayersArray(); 
-		giveRandomObjectivesToPlayers(availableObjectives);		
-		giveRandomTerritoriesToPlayers(world);
+	public void start() {
+		state.onBegin();
 	}
 	
 	public Match(List<Player> players) throws Exception {
@@ -103,5 +62,7 @@ class Match {
 		for (Player p : players) {
 			this.players.add(p);
 		}
+		randomizePlayersArray();
+		state = new InitialMatchState(this);
 	}
 }
