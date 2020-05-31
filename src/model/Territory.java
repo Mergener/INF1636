@@ -27,8 +27,16 @@ class Territory {
 		return owner;
 	}
 	
-	public void setOwner(Player owner) {
-		this.owner = owner;
+	public void setOwner(Player newOwner) {
+		if (newOwner != null && newOwner != owner) {
+			owner = newOwner;
+			
+			if (owner != null) {
+				owner.transferTerritory(this, newOwner);
+			} else {
+				newOwner.addTerritory(this);
+			}			
+		}
 	}
 	
 	public int getSoldierCount() {
@@ -37,6 +45,10 @@ class Territory {
 	
 	public void addSoldiers(int count) {
 		soldierCount += count;
+	}
+	
+	public void removeSoldiers(int count) {
+		soldierCount = Math.max(0, soldierCount - count);
 	}
 	
 	void addNeighbour(Territory t) {

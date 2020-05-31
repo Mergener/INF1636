@@ -18,6 +18,4 @@ public class TerritoryCard implements ICard {
 	public Image getImage() {
 		return image;
 	}
-	
-	
 }

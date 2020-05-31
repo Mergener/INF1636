@@ -18,23 +18,6 @@ class Match {
 	public List<Player> getPlayers() {
 		return Collections.unmodifiableList(players);
 	}
-	
-	private MatchState state;
-	public MatchState getState() {
-		return state;
-	}
-	
-	public void setState(MatchState state) {
-		if (this.state != null) {
-			this.state.onFinish();
-		}
-		
-		this.state = state;
-		
-		if (this.state != null) {
-			this.state.onBegin();
-		}
-	}
 
 	/*
 	 * @brief Randomly sorts players array.
@@ -49,9 +32,11 @@ class Match {
 			players.set(rand, p);
 		}
 	}
-		
-	public void start() {
-		state.onBegin();
+	
+	private Player currentPlayer;
+	
+	public Player getCurrentPlayer() {
+		return currentPlayer;
 	}
 	
 	public Match(List<Player> players) throws Exception {
@@ -63,6 +48,9 @@ class Match {
 			this.players.add(p);
 		}
 		randomizePlayersArray();
-		state = new InitialMatchState(this);
+	}
+	
+	public static Match getCurrentMatch() {
+		return null;
 	}
 }
