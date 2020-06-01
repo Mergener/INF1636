@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ModelTester {
 
-	public static void main(String[] args) throws Exception {
+	public static void testModels() throws Exception {
 		// Generate players:
 		ArrayList<Player> players = new ArrayList<Player>();
 		
@@ -45,5 +45,4 @@ public class ModelTester {
 			System.out.printf("%d: %s\n", i+1, match.getPlayers().get(i).getName());
 		}
 	}
-
 }

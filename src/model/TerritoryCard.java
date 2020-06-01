@@ -6,6 +6,7 @@ public class TerritoryCard implements ICard {
 	private String description;
 	private Geometry geometry;
 	private Image image;
+	private Territory territory;
 	
 	public String getDescription() {
 		return description;
@@ -17,5 +18,9 @@ public class TerritoryCard implements ICard {
 	
 	public Image getImage() {
 		return image;
+	}
+	
+	public Territory getTerritory() {
+		return territory;
 	}
 }

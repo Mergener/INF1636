@@ -143,22 +143,6 @@ class Player {
 		return ret;
 	}
 	
-	public void attack(Territory t) throws Exception {
-		if (Match.getCurrentMatch().getCurrentPlayer() != this) {
-			throw new Exception("Player tried attacking territory outside of their turn!");
-		}
-		
-		if (t.getOwner() != this) {
-			throw new Exception("Player tried offensively moving army from a territory that is not owned by them!");
-		}
-		
-		if (t.getSoldierCount() < 2) {
-			throw new Exception("Player tried offensively moving army from a territory with less than two armies!");
-		}
-		
-		t.
-	}
-	
 	public void setObjective(IObjective objective) {
 		this.objective = objective;
 	}
