@@ -1,6 +1,9 @@
 package model;
 
 import java.util.List;
+
+import data.PlayerColor;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -13,8 +16,8 @@ class Player {
 		return name;
 	}
 	
-	private Color color;
-	public Color getColor() {
+	private PlayerColor color;
+	public PlayerColor getColor() {
 		return color;
 	}
 	
@@ -147,7 +150,7 @@ class Player {
 		this.objective = objective;
 	}
 	
-	public Player(String name, Color color) {
+	public Player(String name, PlayerColor color) {
 		this.name = name;
 		this.color = color;
 	}

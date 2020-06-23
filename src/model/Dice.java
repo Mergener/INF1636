@@ -3,7 +3,7 @@ package model;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Dice {
+class Dice {
 
 	private static Random random = new Random();
 	

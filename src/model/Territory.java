@@ -8,9 +8,20 @@ class Territory {
 	private Player owner = null;
 	private Continent continent;
 	
+	private float centerX;
+	private float centerY;
+	
 	private int soldierCount = 0;
 	
 	private ArrayList<Territory> neighbours = new ArrayList<Territory>();
+	
+	public float getCenterX() {
+		return centerX;
+	}
+	
+	public float getCenterY() {
+		return centerY;
+	}
 	
 	public String getName() {
 		return name;
@@ -69,7 +80,9 @@ class Territory {
 		return false;
 	}
 	
-	public Territory(String name) {
+	public Territory(String name, float centerX, float centerY) {
 		this.name = name;
+		this.centerX = centerX;
+		this.centerY = centerY;
 	}
 }

@@ -24,6 +24,10 @@ class Continent {
 		return value;
 	}
 	
+	public int getTerritoryCount() {
+		return territories.size();
+	}
+	
 	public Collection<Territory> getTerritories() {
 		return territories.values();
 	}

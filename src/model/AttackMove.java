@@ -2,7 +2,7 @@ package model;
 
 import java.util.Random;
 
-public class AttackMove extends PlayerMove {
+class AttackMove extends PlayerMove {
 
 	public final Territory source;
 	public final Territory target;

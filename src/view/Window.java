@@ -21,6 +21,10 @@ public abstract class Window {
 		View previousView = currentView;
 		currentView = v;
 		
+		frame.getContentPane().removeAll();
+		frame.revalidate();
+		frame.repaint();
+		
 		if (currentView != null) {
 			currentView.onEnter(previousView);
 		}

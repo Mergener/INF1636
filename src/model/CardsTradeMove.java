@@ -1,6 +1,6 @@
 package model;
 
-public class CardsTradeMove extends PlayerMove {
+class CardsTradeMove extends PlayerMove {
 	private static class TradeCounter implements MatchStartListener {
 		public int tradeCount = 0;
 		

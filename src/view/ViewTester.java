@@ -8,5 +8,4 @@ public class ViewTester {
 		mainWindow = new MainWindow();
 		mainWindow.start();
 	}
-
 }

@@ -15,6 +15,8 @@ class Match {
 	 */
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
+	private World world;
+	
 	public List<Player> getPlayers() {
 		return Collections.unmodifiableList(players);
 	}
@@ -114,18 +116,14 @@ class Match {
 		}
 	}
 	
-	private static Match currentMatch;
-	
-	public static void start(Match m) {
-		for (int i = 0; i < matchStartListeners.size(); ++i) {
-			matchStartListeners.get(i).onMatchStart(m);
-		}
+	public void start() {
+		world = World.generateDefaultWorld();
 		
-		currentMatch = m;
-	}
-	
-	public static Match getCurrentMatch() {
-		return currentMatch;
+		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(world));
+		
+		for (int i = 0; i < matchStartListeners.size(); ++i) {
+			matchStartListeners.get(i).onMatchStart(this);
+		}
 	}
 	
 	private static ArrayList<MatchStartListener> matchStartListeners = new ArrayList<MatchStartListener>();

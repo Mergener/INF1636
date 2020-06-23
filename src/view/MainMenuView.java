@@ -12,9 +12,7 @@ public class MainMenuView extends View {
 	protected void onEnter(View previousView) {
 		JFrame frame = getWindow().getFrame();
 		Container contentPane = frame.getContentPane();
-		
-		contentPane.setLayout(new FlowLayout());
-		
+			
 		playerCountBox = new JFormattedTextField(NumberFormat.getNumberInstance());
 		
 		contentPane.add(playerCountBox);

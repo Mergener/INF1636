@@ -2,7 +2,7 @@ package model;
 
 import java.awt.Image;
 
-public class TerritoryCard implements ICard {
+class TerritoryCard implements ICard {
 	private String description;
 	private Geometry geometry;
 	private Image image;

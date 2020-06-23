@@ -1,5 +1,5 @@
 package model;
 
-public interface MatchStartListener {
+interface MatchStartListener {
 	public void onMatchStart(Match m);
 }
