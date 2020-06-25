@@ -44,4 +44,9 @@ class DominateTerritoriesObjective implements IObjective {
 			this.targets[i] = targets[i];
 		}
 	}
+	
+	@Override
+	public boolean isSuitableForPlayer(Player p) {
+		return true;
+	}
 }

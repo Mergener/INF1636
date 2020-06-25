@@ -18,7 +18,7 @@ class World {
 		world.continents = new Continent[5];
 		
 		// South america:	
-		Territory brazil = new Territory("Brasil", 0.28f, 0.58f);
+		Territory brazil = new Territory("Brazil", 0.28f, 0.58f);
 		Territory argentina = new Territory("Argentina", 0.26f, 0.71f);
 		Territory peru = new Territory("Peru", 0.23f, 0.64f);
 		Territory venezuela = new Territory("Venezuela", 0.19f, 0.56f);
@@ -29,20 +29,20 @@ class World {
 		peru.addNeighbour(argentina);
 		peru.addNeighbour(venezuela);
 		
-		world.continents[0] = new Continent("América do Sul", new Territory[] {
+		world.continents[0] = new Continent("South America", new Territory[] {
 				brazil, argentina,
 				peru, venezuela
 		}, 2, new Color(0, 104, 58));
 				
 		// North America:
-		Territory alaska = new Territory("Alasca", 0.08f, 0.2f);
+		Territory alaska = new Territory("Alaska", 0.08f, 0.2f);
 		Territory calgary = new Territory("Calgary", 0.17f, 0.18f);
-		Territory greenland = new Territory("Groenlandia", 0.31f, 0.15f);
+		Territory greenland = new Territory("Greenland", 0.31f, 0.15f);
 		Territory vancouver = new Territory("Vancouver", 0.14f, 0.15f);
 		Territory california = new Territory("California", 0.13f, 0.38f);
 		Territory texas = new Territory("Texas", 0.16f, 0.34f);
-		Territory newYork = new Territory("Nova Iorque", 0.19f, 0.35f);
-		Territory mexico = new Territory("México", 0.13f, 0.46f);
+		Territory newYork = new Territory("New York", 0.19f, 0.35f);
+		Territory mexico = new Territory("Mexico", 0.13f, 0.46f);
 		Territory quebec = new Territory("Quebec", 0.26f, 0.26f);
 		
 		mexico.addNeighbour(venezuela);
@@ -61,7 +61,7 @@ class World {
 		calgary.addNeighbour(greenland);
 		quebec.addNeighbour(greenland);
 
-		world.continents[1] = new Continent("América do Norte", new Territory[] {
+		world.continents[1] = new Continent("North America", new Territory[] {
 				alaska, calgary, greenland,
 				vancouver, quebec,
 				california, texas, newYork,
@@ -69,14 +69,14 @@ class World {
 		}, 5, new Color(238, 64, 54));
 		
 		// Europe:
-		Territory uk = new Territory("Reino Unido", 0.45f, 0.23f);
-		Territory france = new Territory("França", 0.48f, 0.32f);
-		Territory spain = new Territory("Espanha", 0.44f, 0.37f);
-		Territory italy = new Territory("Itália", 0.52f, 0.31f);
-		Territory romania = new Territory("Romênia", 0.57f, 0.31f);
-		Territory ukraine = new Territory("Ucrânia", 0.59f, 0.31f);
-		Territory poland = new Territory("Polônia", 0.56f, 0.27f);
-		Territory sweden = new Territory("Suécia", 0.53f, 0.17f);
+		Territory uk = new Territory("United Kingdom", 0.45f, 0.23f);
+		Territory france = new Territory("France", 0.48f, 0.32f);
+		Territory spain = new Territory("Spain", 0.44f, 0.37f);
+		Territory italy = new Territory("Italy", 0.52f, 0.31f);
+		Territory romania = new Territory("Romania", 0.57f, 0.31f);
+		Territory ukraine = new Territory("Ukraine", 0.59f, 0.31f);
+		Territory poland = new Territory("Poland", 0.56f, 0.27f);
+		Territory sweden = new Territory("Sweden", 0.53f, 0.17f);
 		
 		uk.addNeighbour(greenland);
 		uk.addNeighbour(france);
@@ -90,23 +90,23 @@ class World {
 		poland.addNeighbour(ukraine);
 		romania.addNeighbour(ukraine);
 		
-		world.continents[2] = new Continent("Europa", new Territory[] {
+		world.continents[2] = new Continent("Europe", new Territory[] {
 				uk, sweden,
 				spain, france, italy,
 				poland, romania, ukraine
 		}, 5, new Color(43, 56, 143));
 		
 		// Asia:
-		Territory estonia = new Territory("Estônia", 0.66f, 0.22f);
-		Territory russia = new Territory("Rússia", 0.76f, 0.21f);
-		Territory siberia = new Territory("Sibéria", 0.87f, 0.19f);
+		Territory estonia = new Territory("Estonia", 0.66f, 0.22f);
+		Territory russia = new Territory("Russia", 0.76f, 0.21f);
+		Territory siberia = new Territory("Siberia", 0.87f, 0.19f);
 		Territory letonia = new Territory("Letonia", 0.64f, 0.25f);
-		Territory kazakhstan = new Territory("Cazaquistão", 0.81f, 0.19f);
-		Territory turkey = new Territory("Turquia", 0.7f, 0.32f);
+		Territory kazakhstan = new Territory("Kazakhstan", 0.81f, 0.19f);
+		Territory turkey = new Territory("Turkey", 0.7f, 0.32f);
 		Territory mongolia = new Territory("Mongolia", 0.84f, 0.33f);
-		Territory japan = new Territory("Japão", 0.93f, 0.36f);
-		Territory syria = new Territory("Síria", 0.65f, 0.38f);
-		Territory pakistan = new Territory("Paquistão", 0.73f, 0.42f);
+		Territory japan = new Territory("Japan", 0.93f, 0.36f);
+		Territory syria = new Territory("Syria", 0.65f, 0.38f);
+		Territory pakistan = new Territory("Pakistan", 0.73f, 0.42f);
 		Territory china = new Territory("China", 0.77f, 0.38f);
 		Territory northKorea = new Territory("Coreia do Norte", 0.84f, 0.4f);
 		Territory southKorea = new Territory("Coreia do Sul", 0.84f, 0.43f);
@@ -237,6 +237,15 @@ class World {
 			Territory t = c.findTerritory(name);
 			if (t != null) {
 				return t;
+			}
+		}
+		return null;
+	}
+	
+	public Continent findContinent(String name) {
+		for (Continent c : continents) {
+			if (c.getName() == name) {
+				return c;
 			}
 		}
 		return null;

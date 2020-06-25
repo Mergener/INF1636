@@ -137,13 +137,12 @@ class Player {
 	 * @param c The specified continent.
 	 */
 	public boolean hasEntireContinent(Continent c) {
-		boolean ret = true;
 		for (Territory t : c.getTerritories()) {
 			if(t.getOwner() != this) {
-				ret = false;
+				return false;
 			}
 		}
-		return ret;
+		return true;
 	}
 	
 	public void setObjective(IObjective objective) {

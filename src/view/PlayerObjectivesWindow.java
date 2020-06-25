@@ -53,7 +53,16 @@ public class PlayerObjectivesWindow extends Window {
 				try {
 					JOptionPane.showMessageDialog(getFrame(), String.format("%s", game.getPlayerObjectiveDescription(color)));
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(getFrame(), "An error occurred when trying to display player objective.");
+					StringBuilder sb = new StringBuilder();
+					sb.append("An error occurred when trying to display player objective.");
+					StackTraceElement[] stack = ex.getStackTrace();
+					for(int i = 0; i < stack.length; ++i) {
+						sb.append(stack[i].toString());
+						sb.append("\n");
+					}
+					sb.append(ex.getStackTrace());
+					JOptionPane.showMessageDialog(getFrame(), sb.toString());
+					
 				}
 			}
 		});
