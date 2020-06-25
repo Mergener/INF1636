@@ -1,7 +1,6 @@
-/model/
-/view/
 /images/
-/shared/
 /data/
 /exceptions/
-/objectives/
+/main/
+/model/
+/view/

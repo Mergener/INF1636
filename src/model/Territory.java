@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import data.Point;
+
 class Territory {
 	
 	private String name;
@@ -14,6 +16,8 @@ class Territory {
 	private int soldierCount = 0;
 	
 	private ArrayList<Territory> neighbours = new ArrayList<Territory>();
+	
+	private Point[] vertices;
 	
 	public float getCenterX() {
 		return centerX;
@@ -84,5 +88,9 @@ class Territory {
 		this.name = name;
 		this.centerX = centerX;
 		this.centerY = centerY;
+	}
+
+	public Territory(String string, Point[] vertices) {
+		
 	}
 }

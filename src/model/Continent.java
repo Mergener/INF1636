@@ -11,7 +11,7 @@ class Continent {
 	private int value;
 	
 	private Hashtable<String, Territory> territories = new Hashtable<String, Territory>();
-	
+		
 	public String getName() {
 		return name;
 	}
