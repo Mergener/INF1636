@@ -65,6 +65,8 @@ public class GameView extends View {
 	}
 	
 	protected void onMapTerritoryClicked(String territoryName) {
+		JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("%s\nNúmero de exércitos: %d\nDono: %s\n",territoryName,
+		warGame.getTerritorySoldierCount(territoryName),warGame.getTerritoryOwnerColor(territoryName)));
 		
 	}
 
