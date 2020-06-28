@@ -31,8 +31,15 @@ public class GameViewSidePanel extends JPanel implements GameContextChangeListen
 	
 	private void generate() {
 		setLayout(new GridLayout(10, 1));
+		
+		contextLabel = new JLabel();
+		add(contextLabel);
+		
 		objectivesButton = new JButton("View Objectives");
 		add(objectivesButton);
+		
+		attackButton = new JButton("Attack");
+		add(attackButton);
 	}
 	
 	public GameViewSidePanel(WarGame game) {
