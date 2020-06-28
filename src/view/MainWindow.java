@@ -9,12 +9,13 @@ public class MainWindow extends Window {
 		JFrame frame = getFrame();
 		
 		frame.setTitle("War");
-		frame.setSize(1280, 720);
+		frame.setPreferredSize(new Dimension(1280, 720));
 		frame.setLocationRelativeTo(null);			
 		
 		setCurrentView(new PlayerRegistrationView(this));
 		
 		frame.getContentPane().setLayout(new FlowLayout());	
 		frame.revalidate();
+		frame.pack();
 	}
 }

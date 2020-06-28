@@ -1,22 +1,18 @@
 package view;
 
 import model.WarGame;
-
+import shared.Point;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import java.awt.event.*;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import exceptions.NotEnoughPlayers;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class GameView extends View {
 
 	private WarGame warGame;
+	private WorldMap worldMap;
+	private GameViewSidePanel sidePanel;
 	
 	@Override
 	protected void onEnter(View previousView) {
@@ -26,34 +22,50 @@ public class GameView extends View {
 			JFrame frame = getWindow().getFrame();
 			Container contentPane = frame.getContentPane();
 			
-			LayeredImageDrawer imgDrawer = new LayeredImageDrawer();
+			frame.setLayout(new FlowLayout());
 			
-			BufferedImage fg = ImageIO.read(getClass().getResource("/images/war_tabuleiro_mapa copy.png"));
-			BufferedImage bg = ImageIO.read(getClass().getResource("/images/war_tabuleiro_fundo.png"));
-			imgDrawer.addImageLayer(bg);
-			imgDrawer.addImageLayer(fg);
-						
-			contentPane.add(imgDrawer);
+			sidePanel = new GameViewSidePanel(warGame);
 			
-			JButton objectivesButton = new JButton("View Objectives");
-			objectivesButton.addActionListener(new ActionListener() {
+			worldMap = new WorldMap(warGame);
+			
+			worldMap.attachTo(contentPane);
+			worldMap.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					String tName = worldMap.getTerritoryNameInPoint(new Point(e.getX(), e.getY()));
+					
+					if (tName != null) {
+						onMapTerritoryClicked(tName);
+					}
+				}
+			});
+			
+			sidePanel.getObjectivesButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ev) {					
 					PlayerObjectivesWindow playerObjectivesWindow = new PlayerObjectivesWindow(warGame, getWindow());
 					
 					playerObjectivesWindow.start();
 				}
 			});
+						
+			contentPane.add(sidePanel);
 			
-			contentPane.add(objectivesButton);
+			frame.revalidate();
+			frame.repaint();
 			
-			contentPane.revalidate();
-			contentPane.repaint();
-			
-			frame.pack();
+			frame.pack();			
 			
 		} catch (IOException ex) {
 			System.err.println("Error loading game background image.");
+			ex.printStackTrace();
+			
+		} catch (NotEnoughPlayers e) {
+			// Nothing to be done
 		}
+	}
+	
+	protected void onMapTerritoryClicked(String territoryName) {
+		
 	}
 
 	@Override

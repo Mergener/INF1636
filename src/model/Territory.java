@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-import data.Point;
+import shared.Point;
 
 class Territory {
 	
@@ -10,28 +10,25 @@ class Territory {
 	private Player owner = null;
 	private Continent continent;
 	
-	private float centerX;
-	private float centerY;
-	
 	private int soldierCount = 0;
 	
 	private ArrayList<Territory> neighbours = new ArrayList<Territory>();
 	
-	private Point[] vertices;
-	
-	public float getCenterX() {
-		return centerX;
+	private Point center;
+	public Point getCenter() {
+		return center;
 	}
 	
-	public float getCenterY() {
-		return centerY;
+	private Point[] vertices;
+	public Point[] getVertices() {
+		return vertices;
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
-	public Continent getContinent(){
+	public Continent getContinent() {
 		return continent;
 	}
 	
@@ -84,13 +81,9 @@ class Territory {
 		return false;
 	}
 	
-	public Territory(String name, float centerX, float centerY) {
+	public Territory(String name, Point center, Point[] vertices) {
 		this.name = name;
-		this.centerX = centerX;
-		this.centerY = centerY;
-	}
-
-	public Territory(String string, Point[] vertices) {
-		
+		this.vertices = vertices;
+		this.center = center;
 	}
 }

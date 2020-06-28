@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-import data.PlayerColor;
+import shared.PlayerColor;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,6 +24,9 @@ class Player {
 	private IObjective objective;
 	public IObjective getObjective() {
 		return objective;
+	}
+	public void setObjective(IObjective o) {
+		objective = o;
 	}
 	
 	private ArrayList<TerritoryCard> territoryCards = new ArrayList<TerritoryCard>();
@@ -137,17 +140,12 @@ class Player {
 	 * @param c The specified continent.
 	 */
 	public boolean hasEntireContinent(Continent c) {
-		boolean ret = true;
 		for (Territory t : c.getTerritories()) {
 			if(t.getOwner() != this) {
-				ret = false;
+				return false;
 			}
 		}
-		return ret;
-	}
-	
-	public void setObjective(IObjective objective) {
-		this.objective = objective;
+		return true;
 	}
 	
 	public Player(String name, PlayerColor color) {

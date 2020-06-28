@@ -2,6 +2,8 @@ package model;
 
 import java.util.Random;
 
+import shared.Dice;
+
 class AttackMove extends PlayerMove {
 
 	public final Territory source;

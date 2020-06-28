@@ -3,7 +3,7 @@ package model;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import data.PlayerColor;
+import shared.PlayerColor;
 
 public class ModelTester {
 

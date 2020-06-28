@@ -1,4 +1,4 @@
-package data;
+package shared;
 
 import java.awt.Color;
 import java.util.HashMap;

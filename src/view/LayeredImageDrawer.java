@@ -4,14 +4,16 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.awt.Dimension;
+import java.awt.Font;
+
 import javax.swing.JPanel;
 
 public class LayeredImageDrawer extends JPanel {
-
+	
 	private ArrayList<BufferedImage> layers = new ArrayList<BufferedImage>();
 	
 	private int highestWidth = 0;
-	private int highestHeight = 0;	
+	private int highestHeight = 0;
 	
 	public LayeredImageDrawer() {
 	}
@@ -26,9 +28,11 @@ public class LayeredImageDrawer extends JPanel {
 	
 	@Override
 	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+        
 		for (int i = 0; i < layers.size(); ++i) {
 			BufferedImage image = layers.get(i);
-			g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);			
+			g.drawImage(image, 0, 0, this);
 		}
 		
 		g.finalize();

@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.NotEnoughPlayers;
 import java.util.Collections;
 import java.util.List;
 import java.util.Hashtable;
@@ -16,6 +17,10 @@ class Match {
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
 	private World world;
+	
+	public World getWorld() {
+		return world;
+	}
 	
 	public List<Player> getPlayers() {
 		return Collections.unmodifiableList(players);
@@ -40,11 +45,13 @@ class Match {
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
-	
-	public Match(List<Player> players) throws Exception {
+		
+	public Match(List<Player> players, World world) throws NotEnoughPlayers {
 		if (players.size() < 3 || players.size() > 6) {
-			throw new Exception("Invalid number of players. Must have between 3 and 6 players, inclusive.");
+			throw new NotEnoughPlayers("Invalid number of players. Must have between 3 and 6 players, inclusive.");
 		}
+		
+		this.world = world;
 		
 		for (Player p : players) {
 			this.players.add(p);
@@ -59,13 +66,12 @@ class Match {
 		
 		for (int i = 0; i < players.size(); ++i) {
 			int rand = random.nextInt(objectives.size());
-			
 			players.get(i).setObjective(objectives.get(rand));
 			objectives.remove(rand);
 		}
 	}
 
-	private void giveRandomTerritoriesToPlayers(World world) {
+	private void giveRandomTerritoriesToPlayers() {
 		List<Player> players = getPlayers();
 		
 		// The following hashtables links players to the number of territories they can still receive during
@@ -116,10 +122,9 @@ class Match {
 		}
 	}
 	
-	public void start() {
-		world = World.generateDefaultWorld();
-		
+	public void start() {		
 		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(world));
+		giveRandomTerritoriesToPlayers();
 		
 		for (int i = 0; i < matchStartListeners.size(); ++i) {
 			matchStartListeners.get(i).onMatchStart(this);

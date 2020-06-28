@@ -30,11 +30,7 @@ class DominateTerritoriesObjective implements IObjective {
 			}
 		}
 		
-		if (amtOwned == targets.length) {
-			return true;
-		} else {
-			return false;
-		}
+		return amtOwned == targets.length;
 	}
 
 	public DominateTerritoriesObjective(Territory[] targets) {
@@ -43,5 +39,10 @@ class DominateTerritoriesObjective implements IObjective {
 		for (int i = 0; i < targets.length; ++i) {
 			this.targets[i] = targets[i];
 		}
+	}
+	
+	@Override
+	public boolean isSuitableForPlayer(Player p) {
+		return true;
 	}
 }

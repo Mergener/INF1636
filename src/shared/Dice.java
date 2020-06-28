@@ -1,9 +1,9 @@
-package model;
+package shared;
 
 import java.util.Arrays;
 import java.util.Random;
 
-class Dice {
+public class Dice {
 
 	private static Random random = new Random();
 	

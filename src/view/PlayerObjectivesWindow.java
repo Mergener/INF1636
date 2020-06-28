@@ -7,8 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import data.PlayerColor;
 import model.WarGame;
+import shared.PlayerColor;
 
 public class PlayerObjectivesWindow extends Window {
 
@@ -53,7 +53,19 @@ public class PlayerObjectivesWindow extends Window {
 				try {
 					JOptionPane.showMessageDialog(getFrame(), String.format("%s", game.getPlayerObjectiveDescription(color)));
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(getFrame(), "An error occurred when trying to display player objective.");
+					
+					StringBuilder sb = new StringBuilder();
+					sb.append("An error occurred when trying to display player objective:\n");
+					sb.append(ex.getClass().getName());
+					StackTraceElement[] stack = ex.getStackTrace();
+					
+					for (int i = 0; i < stack.length; ++i) {
+						sb.append("\n");
+						sb.append(stack[i].toString());
+					}
+					
+					sb.append(ex.getStackTrace());
+					JOptionPane.showMessageDialog(getFrame(), sb.toString());
 				}
 			}
 		});

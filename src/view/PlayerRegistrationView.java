@@ -3,9 +3,10 @@ package view;
 import java.util.ArrayList;
 import javax.swing.*;
 
-import data.PlayerColor;
 import exceptions.BadPlayerColorUsage;
+import exceptions.GameAlreadyStarted;
 import model.WarGame;
+import shared.PlayerColor;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -105,6 +106,8 @@ public class PlayerRegistrationView extends View {
 				} catch (BadPlayerColorUsage e) {
 					JOptionPane.showMessageDialog(getWindow().getFrame(), "There cannot be more than one player using the same color.");
 					return;
+				} catch (GameAlreadyStarted e) {
+					// Nothing to be done
 				}
 				
 				getWindow().setCurrentView(new GameView(getWindow(), warGame));
