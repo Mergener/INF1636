@@ -78,7 +78,7 @@ public class WorldMap {
 	}
 
 	public String getTerritoryNameInPoint(Point p) {
-		Point point = new Point((float)p.y / mapResX, (float)p.y / mapResY);
+		Point point = new Point((float)p.x / mapResX, (float)p.y / mapResY);
 		
 		for (int i = 0; i < territoriesVertices.size(); ++i) {
 			TerritoryVertices t = territoriesVertices.get(i);

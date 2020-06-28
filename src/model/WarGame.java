@@ -1,6 +1,9 @@
 package model;
 
 import java.util.List;
+
+import javax.swing.JOptionPane;
+
 import java.util.ArrayList;
 
 import exceptions.*;
@@ -139,6 +142,27 @@ public class WarGame {
 		
 		return ret;
 	}
+	
+	/**
+	 * 
+	 * @param The name of the territory.
+	 * @return The soldier count from the desired territory.
+	 */
+	public int getTerritorySoldierCount(String territoryName) {
+		Territory t = world.findTerritory(territoryName);
+		return t.getSoldierCount();
+	}
+	
+	/**
+	 * 
+	 * @param The name of the territory.
+	 * @return The territory owner's color.
+	 */
+	public PlayerColor getTerritoryOwnerColor(String territoryName) {
+		Territory t = world.findTerritory(territoryName);
+		return t.getOwner().getColor();
+	}
+	
 	
 	/**
 	 * Returns the coordinates of the center of the specified territory.

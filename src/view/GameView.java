@@ -31,7 +31,7 @@ public class GameView extends View {
 			worldMap.attachTo(contentPane);
 			worldMap.addMouseListener(new MouseAdapter() {
 				@Override
-				public void mouseClicked(MouseEvent e) {
+				public void mousePressed(MouseEvent e) {
 					String tName = worldMap.getTerritoryNameInPoint(new Point(e.getX(), e.getY()));
 					
 					if (tName != null) {
@@ -65,6 +65,8 @@ public class GameView extends View {
 	}
 	
 	protected void onMapTerritoryClicked(String territoryName) {
+		JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("%s\nNúmero de exércitos: %d\nDono: %s\n",territoryName,
+		warGame.getTerritorySoldierCount(territoryName),warGame.getTerritoryOwnerColor(territoryName)));
 		
 	}
 
