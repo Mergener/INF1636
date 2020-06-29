@@ -30,8 +30,12 @@ class Player {
 	}
 	
 	private ArrayList<TerritoryCard> territoryCards = new ArrayList<TerritoryCard>();
-	public List<TerritoryCard> getCardList() {
+	public List<TerritoryCard> getTerritoryCardList() {
 		return Collections.unmodifiableList(territoryCards);
+	}
+	
+	public void addTerritoryCard(TerritoryCard card) {
+		territoryCards.add(card);
 	}
 	
 	private int territoryCount;
@@ -129,7 +133,7 @@ class Player {
 		continentalSoldierCount -= amount;
 		t.addSoldiers(amount);
 	}
-	
+		
 	public void addSoldiers(int v) {
 		soldierCount += v;
 	}

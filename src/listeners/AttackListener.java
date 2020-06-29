@@ -1,7 +1,7 @@
 package listeners;
 
-import shared.AttackEventArgs;
+import shared.AttackSummary;
 
 public interface AttackListener {
-	public void onAttackPerformed(AttackEventArgs args);
+	public void onAttackPerformed(AttackSummary args);
 }

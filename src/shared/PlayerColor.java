@@ -9,38 +9,70 @@ public enum PlayerColor {
 	Blue,
 	Black,
 	Yellow,
-	White;
+	White,
+	_ColorCount;
 	
 	private static HashMap<String, PlayerColor> colorNamesToColors;
 	
 	public Color getRGBColor() {
 		switch (this) {
 		case Red:
-			return Color.RED;
+			return new Color(255, 40, 40);
 		case Green:
-			return Color.GREEN;
+			return new Color(40, 255, 40);
 		case Blue:
-			return Color.BLUE;
+			return new Color(40, 40, 255);
 		case Yellow:
-			return Color.YELLOW;
+			return new Color(255, 255, 40);
 		case White:
-			return Color.WHITE;
+			return new Color(240, 240, 240);
 		case Black:
 		default:
-			return Color.BLACK;
+			return new Color(20, 20, 20);
 		}
+	}
+	
+	public String getName() {
+		switch (this) {
+		case Red:
+			return "Vermelho";
+		case Green:
+			return "Verde";
+		case Blue:
+			return "Azul";
+		case Yellow:
+			return "Amarelo";
+		case White:
+			return "Branco";
+		case Black:
+		default:
+			return "Preto";
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
+	}
+	
+	public String getHTMLHexString() {
+		Color rgb = getRGBColor();
+		
+		String ret = String.format("#%x%x%x", rgb.getRed(), rgb.getGreen(), rgb.getBlue());
+		
+		return ret;
 	}
 	
 	public static PlayerColor getColorByName(String name) {
 		if (colorNamesToColors == null) {
 			colorNamesToColors = new HashMap<String, PlayerColor>();
 
-			colorNamesToColors.put("red", PlayerColor.Red);
-			colorNamesToColors.put("blue", PlayerColor.Blue);
-			colorNamesToColors.put("green", PlayerColor.Green);
-			colorNamesToColors.put("black", PlayerColor.Black);
-			colorNamesToColors.put("yellow", PlayerColor.Yellow);
-			colorNamesToColors.put("white", PlayerColor.White);
+			colorNamesToColors.put("vermelho", PlayerColor.Red);
+			colorNamesToColors.put("azul", PlayerColor.Blue);
+			colorNamesToColors.put("verde", PlayerColor.Green);
+			colorNamesToColors.put("preto", PlayerColor.Black);
+			colorNamesToColors.put("amarelo", PlayerColor.Yellow);
+			colorNamesToColors.put("branco", PlayerColor.White);
 		}
 		
 		return colorNamesToColors.get(name.toLowerCase());

@@ -1,7 +1,7 @@
 package listeners;
 
-import shared.GameContext;
+import shared.GameState;
 
 public interface GameContextChangeListener {
-	public void onGameContextChanged(GameContext newCtx);
+	public void onGameStateChanged(GameState newState);
 }

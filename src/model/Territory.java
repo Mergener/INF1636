@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
+import listeners.TerritoryListener;
 import shared.Point;
 
 class Territory {
@@ -13,6 +14,14 @@ class Territory {
 	private int soldierCount = 0;
 	
 	private ArrayList<Territory> neighbours = new ArrayList<Territory>();
+	
+	private ArrayList<TerritoryListener> listeners = new ArrayList<TerritoryListener>();
+	public void addListener(TerritoryListener l) {
+		listeners.add(l);
+	}
+	public void removeTerritoryListener(TerritoryListener l) {
+		listeners.remove(l);
+	}
 	
 	private Point center;
 	public Point getCenter() {
@@ -48,6 +57,10 @@ class Territory {
 			} else {
 				newOwner.addTerritory(this);
 			}			
+			
+			for (int i = 0; i < listeners.size(); ++i) {
+				listeners.get(i).onTerritoryOwnershipChange(name, newOwner.getColor());
+			}
 		}
 	}
 	
@@ -55,12 +68,20 @@ class Territory {
 		return soldierCount;
 	}
 	
+	private void setSoldierCount(int count) {
+		soldierCount = Math.max(0, count);
+		
+		for (int i = 0; i < listeners.size(); ++i) {
+			listeners.get(i).onTerritorySoldierCountChange(getName(), soldierCount);
+		}
+	}
+	
 	public void addSoldiers(int count) {
-		soldierCount += count;
+		setSoldierCount(getSoldierCount() + count);
 	}
 	
 	public void removeSoldiers(int count) {
-		soldierCount = Math.max(0, soldierCount - count);
+		setSoldierCount(getSoldierCount() - count);
 	}
 	
 	void addNeighbour(Territory t) {

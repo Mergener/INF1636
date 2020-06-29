@@ -15,7 +15,7 @@ public class PlayerObjectivesWindow extends Window {
 	private WarGame game;
 	private Window previousWindow;
 	
-	private JComboBox<PlayerColor> colorsComboBox;
+	private JComboBox colorsComboBox;
 	
 	public PlayerObjectivesWindow(WarGame game, Window previousWindow) {
 		this.game = game;
@@ -33,7 +33,7 @@ public class PlayerObjectivesWindow extends Window {
 		Container contentPane = frame.getContentPane();
 		contentPane.setLayout(new FlowLayout());
 		
-		colorsComboBox = new JComboBox<PlayerColor>(playerColors);		
+		colorsComboBox = new JComboBox(playerColors);		
 		contentPane.add(colorsComboBox);
 		
 		previousWindow.getFrame().setEnabled(false);

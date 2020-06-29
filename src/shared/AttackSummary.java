@@ -1,6 +1,4 @@
-package model;
-
-import java.util.Arrays;
+package shared;
 
 /*
  * Holds data about an attack context and outcome.
@@ -37,12 +35,12 @@ public class AttackSummary {
 	/**
 	 *  The attacking territory.
 	 */
-	public final Territory sourceTerritory;
+	public final String sourceTerritoryName;
 	
 	/**
 	 *  The attacked territory.
 	 */
-	public final Territory targetTerritory;
+	public final String targetTerritoryName;
 	
 	private boolean territoryTaken;
 	
@@ -53,23 +51,6 @@ public class AttackSummary {
 		return territoryTaken;
 	}
 	
-	private void calculateOutcome() {
-		int j = defenseDices.length - 1;
-		int i = attackDices.length - 1;
-		
-		while (i >= 0 && j >= 0) {
-			if (attackDices[i] > defenseDices[i]) {
-				defenseLoss++;
-			} else {
-				attackLoss++;
-			}
-			
-			j--; i--;
-		}
-		
-		territoryTaken = defenseLoss == targetTerritory.getSoldierCount();
-	}
-	
 	/**
 	 * @param sourceTerritory The territory performing the attack. The state in which this territory should be passed as a parameter is
 	 * the state it held prior to the attack.
@@ -78,13 +59,14 @@ public class AttackSummary {
 	 * @param defenseDices The defense dices. Expected to be sorted from smallest to largest value.
 	 * @param attackDices The attack dices. Expected to be sorted from smallest to largest value.
 	 */
-	public AttackSummary(Territory sourceTerritory, Territory targetTerritory, int[] defenseDices, int[] attackDices) {
-		this.sourceTerritory = sourceTerritory;
-		this.targetTerritory = targetTerritory;
+	public AttackSummary(String sourceTerritoryName, String targetTerritoryName, int[] defenseDices, int[] attackDices, int defenseLoss, int attackLoss, boolean territoryWasTaken) {
+		this.sourceTerritoryName = sourceTerritoryName;
+		this.targetTerritoryName = targetTerritoryName;
 		this.defenseDices = defenseDices;
 		this.attackDices = attackDices;
-		
-		calculateOutcome();
+		this.attackLoss = attackLoss;
+		this.defenseLoss = defenseLoss;
+		this.territoryTaken = territoryWasTaken;
 	}
 
 }

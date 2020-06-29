@@ -1,12 +1,13 @@
 package model;
 
 import java.util.List;
-
-import javax.swing.JOptionPane;
-
 import java.util.ArrayList;
 
 import exceptions.*;
+import listeners.AttackListener;
+import listeners.TerritoryListener;
+import shared.AttackSummary;
+import shared.GameState;
 import shared.PlayerColor;
 import shared.Point;
 
@@ -20,12 +21,18 @@ public class WarGame {
 	private World world;
 	private Match match;
 	
-	private boolean started = false;
 	/**
 	 * @return True if the game has already started, false otherwise.
 	 */
 	public boolean hasStarted() {
-		return started;
+		return match != null && match.hasStarted();
+	}
+	
+	/**
+	 * @return The current game state.
+	 */
+	public GameState getCurrentState() {
+		return (match != null) ? match.getCurrentState() : GameState.Nothing;
 	}
 
 	/**
@@ -144,7 +151,7 @@ public class WarGame {
 	}
 	
 	/**
-	 * 
+	 * Returns the current soldier count a specified territory.
 	 * @param The name of the territory.
 	 * @return The soldier count from the desired territory.
 	 */
@@ -194,6 +201,48 @@ public class WarGame {
 	}
 	
 	/**
+	 * Adds a listener to a territory that will be notified of changes.
+	 * 
+	 * @param territoryName The territory to listen to.
+	 * @param l The object that will listen to the changes.
+	 */
+	public void addTerritoryListener(String territoryName, TerritoryListener l) {
+		world.findTerritory(territoryName).addListener(l);
+	}
+	
+	/**
+	 * Checks if two territories, A and B, are neighbours. 
+	 * 
+	 * @param tA Territory A.
+	 * @param tB Territory B.
+	 * @return True if tA is neighbour of tB (includes sea connected territories).
+	 */
+	public boolean isTerritoryNeighbourOf(String tA, String tB) {
+		return world.findTerritory(tA).isNeighbourOf(world.findTerritory(tB));
+	}
+	
+	/**
+	 * Adds an attack listener. The attack listener will be notified when attacks
+	 * occur.
+	 * @param l The listener.
+	 */
+	public void addAttackListener(AttackListener l) {
+		match.addAttackListener(l);
+	}
+	
+	/**
+	 * Performs an attack coming from a territory to another.
+	 * 
+	 * @param sourceTerritoryName The territory where the attack is come from.
+	 * @param targetTerritoryName The territory being aimed.
+	 * @return A detailed summary of the attack outcome.
+	 * @throws InvalidAttack If any of the attack conditions aren't met.
+	 */
+	public AttackSummary performAttack(String sourceTerritoryName, String targetTerritoryName) throws InvalidAttack {
+		return match.performAttack(world.findTerritory(sourceTerritoryName), world.findTerritory(targetTerritoryName));
+	}
+		
+	/**
 	 * Starts the game, performing all initial required setup - like sorting first territory cards and
 	 * objectives for players.
 	 * 
@@ -207,7 +256,7 @@ public class WarGame {
 
 		match.start();
 	}
-	
+		
 	public String getWorldMapForegroundPath() {
 		return world.getMapForegroundPath();
 	}

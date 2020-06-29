@@ -12,7 +12,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class PlayerRegistrationView extends View {
-	private static final String[] PLAYER_COLORS =  {"Blue","Red","Yellow","Green","Black","White"};
+	private static final String[] PLAYER_COLORS =  {"Azul", "Vermelho", "Amarelo", "Verde", "Preto", "Branco"};
 	
 	private static final int MAX_PLAYER_COUNT = 6;
 	private static final int MIN_PLAYER_COUNT = 3;

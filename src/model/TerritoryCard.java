@@ -2,10 +2,11 @@ package model;
 
 import java.awt.Image;
 
-class TerritoryCard implements ICard {
+import shared.Geometry;
+
+class TerritoryCard {
 	private String description;
 	private Geometry geometry;
-	private Image image;
 	private Territory territory;
 	
 	public String getDescription() {
@@ -16,11 +17,13 @@ class TerritoryCard implements ICard {
 		return geometry;
 	}
 	
-	public Image getImage() {
-		return image;
-	}
-	
 	public Territory getTerritory() {
 		return territory;
+	}
+	
+	public TerritoryCard(String description, Geometry geometry, Territory territory) {
+		this.description = description;
+		this.geometry = geometry;
+		this.territory = territory;
 	}
 }

@@ -6,13 +6,13 @@ import javax.swing.*;
 
 import listeners.GameContextChangeListener;
 import model.WarGame;
-import shared.GameContext;
+import shared.GameState;
 
 public class GameViewSidePanel extends JPanel implements GameContextChangeListener {
 
 	private static final long serialVersionUID = 4007259948559007014L;
 	
-	private WarGame game;
+	private GameView gameView;
 		
 	private JLabel contextLabel;
 	public JLabel getContextLabel() {
@@ -29,26 +29,50 @@ public class GameViewSidePanel extends JPanel implements GameContextChangeListen
 		return attackButton;
 	}
 	
+	private JButton cancelButton;
+	public JButton getCancelButton() {
+		return cancelButton;
+	}
+
+	/**
+	 * Controls whether the action mode is enabled or not.
+	 * 
+	 * When action mode is enabled, all buttons are disabled except for cancel button.
+	 * When action mode is disabled, all buttons are enabled except for cancel button.
+	 * 
+	 */
+	public void setActionModeEnabled(boolean enabled) {
+		objectivesButton.setEnabled(!enabled);
+		attackButton.setEnabled(!enabled);
+		
+		cancelButton.setEnabled(enabled);
+	}
+	
 	private void generate() {
 		setLayout(new GridLayout(10, 1));
 		
 		contextLabel = new JLabel();
 		add(contextLabel);
 		
-		objectivesButton = new JButton("View Objectives");
+		objectivesButton = new JButton("Ver objetivos");
 		add(objectivesButton);
 		
-		attackButton = new JButton("Attack");
+		attackButton = new JButton("Atacar");
 		add(attackButton);
+		
+		cancelButton = new JButton("Cancelar");
+		add(cancelButton);
+		
+		setActionModeEnabled(false);
 	}
 	
-	public GameViewSidePanel(WarGame game) {
-		this.game = game;
+	public GameViewSidePanel(GameView gameView) {
+		this.gameView = gameView;
 		generate();
 	}
 
 	@Override
-	public void onGameContextChanged(GameContext newCtx) {
+	public void onGameStateChanged(GameState newCtx) {
 		switch (newCtx) {
 		case ArmyDistribution:
 			getAttackButton().setEnabled(false);

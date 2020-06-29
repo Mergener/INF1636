@@ -1,6 +1,6 @@
 package shared;
 
-public enum GameContext {
+public enum GameState {
 	
 	/**
 	 * Armies are currently being distributed throughout each player's territories.
@@ -10,6 +10,8 @@ public enum GameContext {
 	/**
 	 * Players are currently deciding whether they should attack other players.
 	 */
-	PlayerAction
+	PlayerAction,
+	
+	Nothing
 	
 }

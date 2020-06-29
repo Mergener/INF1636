@@ -1,5 +1,6 @@
 package view;
 
+import java.util.Hashtable;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -17,55 +18,90 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
+import listeners.TerritoryListener;
 import model.WarGame;
+import shared.PlayerColor;
 import shared.Point;
 import shared.PolygonUtility;
 
-public class WorldMap {
+public class WorldMap implements TerritoryListener {
 
 	private int mapResX;
 	private int mapResY;
 	
 	private WarGame warGame;
 	private LayeredImageDrawer layeredImageDrawer;
-	
-	private class TerritoryVertices {
-		public final Point[] vertices;
-		public final String name;
 		
-		public TerritoryVertices(String name, Point[] vertices) {
-			this.name = name;
-			this.vertices = vertices;
+	private class TerritoryMap {
+		public final Point[] vertices;
+		public final String territoryName;
+		private JLabel bgLabel; // Drop shadow label
+		private JLabel fgLabel; // The actual label
+		
+		private String htmlColor = "\"white\"";
+		private int soldierCount = 0;
+		
+		private void updateLabelText() {
+			String innerText = String.format("%s<br>(%d)", territoryName, soldierCount);
+						
+			fgLabel.setText(String.format("<html><div align=\"center\"><font color=" + htmlColor + ">%s</font></div></html>", innerText));		
+			bgLabel.setText(String.format("<html><div align=\"center\"><font color=\"black\">%s</font></div></html>", innerText));
+			
+			Dimension dim = bgLabel.getPreferredSize();
+			fgLabel.setBounds(fgLabel.getX(), fgLabel.getY(), (int)dim.getWidth(), (int)dim.getHeight());
+			bgLabel.setBounds(bgLabel.getX(), bgLabel.getY(), (int)dim.getWidth(), (int)dim.getHeight());			
+		}
+		
+		public void updateOwnerColor(PlayerColor color) {
+			htmlColor = color.getHTMLHexString();
+						
+			updateLabelText();
+		}
+		
+		public void updateSoldierCount(int newSoldierCount) {
+			soldierCount = newSoldierCount;
+			
+			updateLabelText();
+		}
+				
+		public TerritoryMap(String territoryName, Point[] vertices, JLabel fgLabel, JLabel bgLabel) {
+			this.territoryName = territoryName;
+			this.vertices = vertices;			
+			this.fgLabel = fgLabel;	
+			this.bgLabel = bgLabel;			
+			
+			updateLabelText();
 		}
 	}
-	private ArrayList<TerritoryVertices> territoriesVertices = new ArrayList<TerritoryVertices>();	
-	
-	private void fetchTerritoryVertices(List<String> territoryNames) {
-		for (String s : territoryNames) {
-			territoriesVertices.add(new TerritoryVertices(s, warGame.getTerritoryVertices(s)));
-		}
-	}
-	
-	private void generateTerritoryLabels(List<String> territoryNames) {
-		for (String s : territoryNames) {
+	private Hashtable<String, TerritoryMap> territoriesMaps = new Hashtable<String, TerritoryMap>();	
+		
+	private void setupTerritoryMaps(List<String> territoryNames) {
+		for (String s : territoryNames) {			
 			shared.Point center = warGame.getTerritoryCenter(s);
 			
 			int x = (int)(center.x * mapResX);
 			int y = (int)(center.y * mapResY);
 			
-			JLabel l1 = new JLabel(s);
-			//JLabel l2 = new JLabel(s);
+			JLabel l1 = new JLabel();
+			JLabel l2 = new JLabel();
+			
+			l1.setLocation(x, y);
+			l2.setLocation(x - 1, y + 1);
 			
 			layeredImageDrawer.add(l1);
-			//layeredImageDrawer.add(l2);
-						
-			Dimension dim = l1.getPreferredSize();
-			l1.setBounds(x, y, (int)dim.getWidth(), (int)dim.getHeight());
-			//l2.setBounds(x - 1, y + 1, (int)dim.getWidth(), (int)dim.getHeight());
+			layeredImageDrawer.add(l2); 
+			
+			TerritoryMap m = new TerritoryMap(s, warGame.getTerritoryVertices(s), l1, l2);			
+			territoriesMaps.put(s, m);
+			m.updateOwnerColor(warGame.getTerritoryOwnerColor(s));
+			m.updateSoldierCount(warGame.getTerritorySoldierCount(s));
 						
 			l1.setVisible(true);
-			//l2.setVisible(true);
+			l2.setVisible(true);
+			
+			warGame.addTerritoryListener(s, this);
 		}
 		
 		layeredImageDrawer.setPreferredSize(new Dimension(mapResX, mapResY));
@@ -80,18 +116,15 @@ public class WorldMap {
 	public String getTerritoryNameInPoint(Point p) {
 		Point point = new Point((float)p.x / mapResX, (float)p.y / mapResY);
 		
-		for (int i = 0; i < territoriesVertices.size(); ++i) {
-			TerritoryVertices t = territoriesVertices.get(i);
-			
+		for (TerritoryMap t : territoriesMaps.values()) {			
 			if (PolygonUtility.pointInsidePolygon(t.vertices, point)) {
-				return t.name;
+				return t.territoryName;
 			}
 		}
 		return null;
 	}
 	
-	public void attachTo(Container container) {
-		
+	public void attachTo(Container container) {		
 		container.add(layeredImageDrawer);
 		container.revalidate();
 	}
@@ -114,9 +147,18 @@ public class WorldMap {
 		layeredImageDrawer.addImageLayer(fg);
 		
 		List<String> territoryNames = warGame.getAllTerritoryNames();
-		generateTerritoryLabels(territoryNames);
-		fetchTerritoryVertices(territoryNames);
+		setupTerritoryMaps(territoryNames);
 		
 		this.layeredImageDrawer.setLayout(null);
+	}
+
+	@Override
+	public void onTerritoryOwnershipChange(String territoryName, PlayerColor newOwnerColor) {
+		territoriesMaps.get(territoryName).updateOwnerColor(newOwnerColor);
+	}
+
+	@Override
+	public void onTerritorySoldierCountChange(String territoryName, int newSoldierCount) {
+		territoriesMaps.get(territoryName).updateSoldierCount(newSoldierCount);
 	}
 }
