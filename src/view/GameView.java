@@ -113,7 +113,7 @@ public class GameView extends View {
 	}
 	
 	private void onAttackSourceSelected(String territoryName) {
-		if (warGame.getTerritoryOwnerColor(territoryName) != warGame.getCurrentPlayerColor()) {
+		if (warGame.getTerritoryOwnerColor(territoryName) != gameController.getCurrentPlayerColor()) {
 			JOptionPane.showMessageDialog(getWindow().getFrame(), "Você não possui este território, selecione outro.");
 			return;
 		}

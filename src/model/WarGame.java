@@ -66,14 +66,7 @@ public class WarGame {
 
 		return p;		
 	}
-	
-	/**
-	 * @return The current player's color or null if the match hasn't started yet.
-	 */
-	public PlayerColor getCurrentPlayerColor() {
-		return match.getCurrentPlayer().getColor();
-	}
-	
+		
 	/**
 	 * @return An array that contains the colors of all registered players.
 	 */
@@ -233,13 +226,15 @@ public class WarGame {
 	/**
 	 * Performs an attack coming from a territory to another.
 	 * 
+	 * @param attacker - The player issuing the attack move.
 	 * @param sourceTerritoryName The territory where the attack is come from.
 	 * @param targetTerritoryName The territory being aimed.
 	 * @return A detailed summary of the attack outcome.
 	 * @throws InvalidAttack If any of the attack conditions aren't met.
+	 * @throws PlayerNotFound The specified player was not found.
 	 */
-	public AttackSummary performAttack(String sourceTerritoryName, String targetTerritoryName) throws InvalidAttack {
-		return match.performAttack(world.findTerritory(sourceTerritoryName), world.findTerritory(targetTerritoryName));
+	public AttackSummary performAttack(PlayerColor attacker, String sourceTerritoryName, String targetTerritoryName) throws InvalidAttack, PlayerNotFound {
+		return match.performAttack(getPlayerByColor(attacker), world.findTerritory(sourceTerritoryName), world.findTerritory(targetTerritoryName));
 	}
 		
 	/**

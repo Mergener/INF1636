@@ -59,12 +59,6 @@ class Match {
 		}
 	}
 	
-	private Player currentPlayer;
-	
-	public Player getCurrentPlayer() {
-		return currentPlayer;
-	}
-		
 	public Match(List<Player> players, World world) throws NotEnoughPlayers {
 		if (players.size() < 3 || players.size() > 6) {
 			throw new NotEnoughPlayers("Invalid number of players. Must have between 3 and 6 players, inclusive.");
@@ -170,14 +164,14 @@ class Match {
 		attackListeners.add(l);
 	}
 	
-	public AttackSummary performAttack(Territory source, Territory target) throws InvalidAttack {
-		if (!currentPlayer.ownsTerritory(source)) {
+	public AttackSummary performAttack(Player player, Territory source, Territory target) throws InvalidAttack {
+		if (!player.ownsTerritory(source)) {
 			throw new InvalidAttack("Jogador tentou atacar partindo de território que não o pertence!");
 		}
 		if (!source.isNeighbourOf(target)) {
 			throw new InvalidAttack("Jogador tentou atacar território não conectado à origem do ataque!");
 		}
-		if (target.getOwner() == currentPlayer) {
+		if (target.getOwner() == player) {
 			throw new InvalidAttack("Jogador tentou atacar o próprio território!");
 		}
 		int soldierCount = source.getSoldierCount() -1;
@@ -223,10 +217,10 @@ class Match {
 		target.removeSoldiers(summary.getDefenseLoss());
 
 		if (territoryTaken) {
-			currentPlayer.addTerritory(target);
+			player.addTerritory(target);
 
 			// Player has taken the territory, add a new territory card for them.	
-			currentPlayer.addTerritoryCard(unclaimedTerritoryCards.pollFirst());
+			player.addTerritoryCard(unclaimedTerritoryCards.pollFirst());
 		}		 
 		
 		return summary;
@@ -252,9 +246,7 @@ class Match {
         return false;
     }
 	
-	public void performCardsTrade(TerritoryCard card1, TerritoryCard card2, TerritoryCard card3) {
-		Player player = getCurrentPlayer();
-		
+	public void performCardsTrade(Player player, TerritoryCard card1, TerritoryCard card2, TerritoryCard card3) {
 		if (evaluateCardTrioBonus(card1, card2, card3)) {			
 			if (player.ownsTerritory(card1.getTerritory())) {
 				card1.getTerritory().addSoldiers(2);
@@ -286,9 +278,7 @@ class Match {
 		
 		started = true;
 		state = GameState.ArmyDistribution;
-		
-		currentPlayer = players.get(0);
-		
+				
 		for (int i = 0; i < matchStartListeners.size(); ++i) {
 			matchStartListeners.get(i).onMatchStart(this);
 		}
