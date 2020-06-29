@@ -10,13 +10,13 @@ public class DestroyOpponentObjective implements IObjective{
 	
 	@Override
 	public String getDescription() {
-		return String.format("Completely destroy all %s player's soldiers.", opponent.getColor().toString());
+		return String.format("Destrua completamente todas as tropas de %s", opponent.getColor().toString());
 	}
 
 	@Override
 	public boolean isComplete(Player p, World world) {
 		assert(p != opponent):
-			"DestroyOpponentObjective: Target cannot be the same as the objective owner.";
+			"DestroyOpponentObjective: Alvo não pode ser o mesmo que o dono do objetivo.";
 		return opponent.getSoldierCount() <= 0;
 	}
 	

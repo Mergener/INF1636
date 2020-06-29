@@ -55,7 +55,7 @@ public class PlayerObjectivesWindow extends Window {
 				} catch (Exception ex) {
 					
 					StringBuilder sb = new StringBuilder();
-					sb.append("An error occurred when trying to display player objective:\n");
+					sb.append("Um erro ocorreu ao tentar exibir o objetivos dos players:\n");
 					sb.append(ex.getClass().getName());
 					StackTraceElement[] stack = ex.getStackTrace();
 					

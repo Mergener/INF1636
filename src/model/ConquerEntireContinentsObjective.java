@@ -12,7 +12,7 @@ public class ConquerEntireContinentsObjective implements IObjective {
 	public String getDescription() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("Conquer all following continents:");
+		sb.append("Conquiste os seguintes continentes:");
 		for (Continent c : continents) {
 			sb.append("\n\t" + c.getName());
 		}

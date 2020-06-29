@@ -123,11 +123,11 @@ class Player {
 	 */
 	public void spendContinentalSoldiers(Territory t, int amount) throws Exception {
 		if (t.getOwner() != this) {
-			throw new Exception("Tried spending continental soldiers in territory not owned by player.");
+			throw new Exception("Tentou posicionar tropas continentais bônus em um território que o jogador não possui.");
 		}
 		Integer continentalSoldierCount = unspentContinentalSoldiers.get(t.getContinent());
 		if (continentalSoldierCount == null || continentalSoldierCount < amount) {
-			throw new Exception("Tried spending too many continental soldiers in territory.");
+			throw new Exception("Tentou posicionar tropas continentais bônus demais.");
 		}
 		
 		continentalSoldierCount -= amount;

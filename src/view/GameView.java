@@ -99,7 +99,7 @@ public class GameView extends View {
 			frame.pack();			
 			
 		} catch (IOException ex) {
-			System.err.println("Error loading game background image.");
+			System.err.println("Erro carregando o background.");
 			ex.printStackTrace();
 			
 		} catch (NotEnoughPlayers e) {

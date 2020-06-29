@@ -37,7 +37,7 @@ public class PlayerRegistrationView extends View {
 			options[i] = String.format("%d", i + MIN_PLAYER_COUNT);
 		}
 
-		JLabel label = new JLabel("Enter the number of players:");
+		JLabel label = new JLabel("Insira o número de jogadores:");
 		
 		JComboBox playerCountComboBox = new JComboBox(options);
 		playerCountComboBox.setSelectedIndex(requestedPlayerCount - MIN_PLAYER_COUNT);
@@ -72,7 +72,7 @@ public class PlayerRegistrationView extends View {
 			slot.nameTextField = new JTextField();
 					
 			slot.nameTextField.setPreferredSize(new Dimension(150, 20));
-			slot.label.setText(String.format("Player %d data: ", i + 1));
+			slot.label.setText(String.format("Informações do jogador %d : ", i + 1));
 					
 			slot.panel.add(slot.label);
 			slot.panel.add(slot.colorComboBox);
@@ -85,7 +85,7 @@ public class PlayerRegistrationView extends View {
 	}
 	
 	private void generateProcceedButton(Container c) {
-		JButton button = new JButton("Procceed");
+		JButton button = new JButton("Prosseguir");
 		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
@@ -99,12 +99,12 @@ public class PlayerRegistrationView extends View {
 						String playerName = slot.nameTextField.getText();
 						PlayerColor playerColor = PlayerColor.getColorByName((String)slot.colorComboBox.getSelectedItem());
 						
-						System.out.printf("Player %d: %s (color %s)\n", i + 1, playerName, playerColor.toString());
+						System.out.printf("Jogador %d: %s (cor %s)\n", i + 1, playerName, playerColor.toString());
 						
 						warGame.registerPlayer(playerName, playerColor);						
 					}
 				} catch (BadPlayerColorUsage e) {
-					JOptionPane.showMessageDialog(getWindow().getFrame(), "There cannot be more than one player using the same color.");
+					JOptionPane.showMessageDialog(getWindow().getFrame(), "Não pode haver mais de um jogador utilizando a mesma cor.");
 					return;
 				} catch (GameAlreadyStarted e) {
 					// Nothing to be done

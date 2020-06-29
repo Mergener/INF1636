@@ -67,7 +67,7 @@ class Match {
 		
 	public Match(List<Player> players, World world) throws NotEnoughPlayers {
 		if (players.size() < 3 || players.size() > 6) {
-			throw new NotEnoughPlayers("Invalid number of players. Must have between 3 and 6 players, inclusive.");
+			throw new NotEnoughPlayers("Número de jogadores inválido. Deve ser entre 3 e 6 jogadores.");
 		}
 		
 		this.world = world;
