@@ -15,7 +15,7 @@ public class SoldierCountInLocationObjective implements IObjective {
 		
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(String.format("Obtain at least %d soldiers in the following territories: ",soldierCount));
+		sb.append(String.format("Obter pelo menos %d tropas nos seguintes territórios: ",soldierCount));
 		for (Territory t : territories) {
 			sb.append("\n\t" + t.getName());
 		}

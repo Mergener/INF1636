@@ -12,52 +12,52 @@ public class DefaultObjectives {
 		ArrayList<IObjective> objectives = new ArrayList<IObjective>();
 		
 		objectives.add(new DominateTerritoriesObjective(new Territory[] {
-				world.findTerritory("Brazil"),
+				world.findTerritory("Brasil"),
 				world.findTerritory("Argentina"),
-				world.findTerritory("Kazakhstan"),
+				world.findTerritory("Cazaquistao"),
 				world.findTerritory("Calgary"),
-				world.findTerritory("Greenland"),
-				world.findTerritory("Alaska"),
+				world.findTerritory("Groenlandia"),
+				world.findTerritory("Alasca"),
 				world.findTerritory("Vancouver"),
 				world.findTerritory("Quebec"),
 				world.findTerritory("Texas"),
-				world.findTerritory("New York")
+				world.findTerritory("Nova Iorque")
 		}));
 		
 		objectives.add(new DominateTerritoriesObjective(new Territory[] {
-				world.findTerritory("Algeria"),
-				world.findTerritory("Egypt"),
+				world.findTerritory("Argelia"),
+				world.findTerritory("Egito"),
 				world.findTerritory("Nigeria"),
 				world.findTerritory("Somalia"),
 				world.findTerritory("Angola"),
-				world.findTerritory("France"),
-				world.findTerritory("Spain"),
-				world.findTerritory("Italy"),
-				world.findTerritory("United Kingdom"),
-				world.findTerritory("Romania")
+				world.findTerritory("Franca"),
+				world.findTerritory("Espanha"),
+				world.findTerritory("Italia"),
+				world.findTerritory("Reino Unido"),
+				world.findTerritory("Romenia")
 		}));		
 
 		objectives.add(new DominateTerritoriesObjective(new Territory[] {
-				world.findTerritory("Turkey"),
-				world.findTerritory("Latvia"),
+				world.findTerritory("Turquia"),
+				world.findTerritory("Letonia"),
 				world.findTerritory("Estonia"),
-				world.findTerritory("Syria"),
-				world.findTerritory("Iraq"),
-				world.findTerritory("Saudi Arabia"),
-				world.findTerritory("Pakistan"),
-				world.findTerritory("Iran"),
-				world.findTerritory("Sweden"),
-				world.findTerritory("Poland")
+				world.findTerritory("Siria"),
+				world.findTerritory("Iraque"),
+				world.findTerritory("Arabia Saudita"),
+				world.findTerritory("Paquistao"),
+				world.findTerritory("Ira"),
+				world.findTerritory("Suecia"),
+				world.findTerritory("Polonia")
 		}));
 		
 		objectives.add(new DominateTerritoriesObjective(new Territory[] {
 				world.findTerritory("Russia"),
-				world.findTerritory("Kazakhstan"),
+				world.findTerritory("Cazaquistao"),
 				world.findTerritory("Mongolia"),
-				world.findTerritory("North Korea"),
-				world.findTerritory("South Korea"),
+				world.findTerritory("Coreia do Norte"),
+				world.findTerritory("Coreia do Sul"),
 				world.findTerritory("Bangladesh"),
-				world.findTerritory("Pakistan"),
+				world.findTerritory("Paquistao"),
 				world.findTerritory("India"),
 				world.findTerritory("Indonesia"),
 				world.findTerritory("Australia")
@@ -65,82 +65,82 @@ public class DefaultObjectives {
 		
 		objectives.add(new DominateTerritoriesObjective(new Territory[] {
 				world.findTerritory("Siberia"),
-				world.findTerritory("Alaska"),
+				world.findTerritory("Alasca"),
 				world.findTerritory("Vancouver"),
-				world.findTerritory("Greenland"),
+				world.findTerritory("Groenlandia"),
 				world.findTerritory("Quebec"),
 				world.findTerritory("Mexico"),
 				world.findTerritory("Venezuela"),
-				world.findTerritory("Brazil"),
+				world.findTerritory("Brasil"),
 				world.findTerritory("Peru"),
 				world.findTerritory("Argentina")
 		}));
 		
 		objectives.add(new SoldierCountInLocationObjective(20, new Territory[] {
-				world.findTerritory("New York"),
-				world.findTerritory("Japan")
+				world.findTerritory("Nova Iorque"),
+				world.findTerritory("Japao")
 		}));
 		
 		objectives.add(new SoldierCountInLocationObjective(50, new Territory[] {
 				world.findTerritory("Estonia"),
-				world.findTerritory("Latvia"),
+				world.findTerritory("Letonia"),
 				world.findTerritory("Russia"),
 				world.findTerritory("Siberia"),
-				world.findTerritory("Turkey"),
-				world.findTerritory("Kazakhstan"),
+				world.findTerritory("Turquia"),
+				world.findTerritory("Cazaquistao"),
 				world.findTerritory("Mongolia"),
-				world.findTerritory("Japan"),
+				world.findTerritory("Japao"),
 				world.findTerritory("China"),
-				world.findTerritory("South Korea"),
-				world.findTerritory("North Korea"),
-				world.findTerritory("Thailand"),
+				world.findTerritory("Coreia do Sul"),
+				world.findTerritory("Coreia do Norte"),
+				world.findTerritory("Tailandia"),
 				world.findTerritory("Bangladesh"),
-				world.findTerritory("Pakistan"),
+				world.findTerritory("Paquistao"),
 				world.findTerritory("India"),
-				world.findTerritory("Iran"),
-				world.findTerritory("Iraq"),
-				world.findTerritory("Syria"),
+				world.findTerritory("Ira"),
+				world.findTerritory("Iraque"),
+				world.findTerritory("Siria"),
 				world.findTerritory("Jordania"),
-				world.findTerritory("Saudi Arabia")
+				world.findTerritory("Arabia Saudita")
 		}));
 		
 		objectives.add(new ConquerEntireContinentsObjective(new Continent[] {
 				world.findContinent("Asia"),
-				world.findContinent("South America")
+				world.findContinent("America do Sul")
 		}));
 		
 		objectives.add(new ConquerEntireContinentsObjective(new Continent[] {
 				world.findContinent("Oceania"),
-				world.findContinent("North America")
+				world.findContinent("America do Norte")
 		}));
 		
 		objectives.add(new ConquerEntireContinentsObjective(new Continent[] {
 				world.findContinent("Asia"),
-				world.findContinent("Europe")
+				world.findContinent("Europa")
 		}));
 		
 		objectives.add(new ConquerEntireContinentsObjective(new Continent[] {
 				world.findContinent("Oceania"),
-				world.findContinent("Europe")
+				world.findContinent("Europa")
 		}));
 		
 		objectives.add(new ConquerEntireContinentsObjective(new Continent[] {
 				world.findContinent("Oceania"),
-				world.findContinent("Europe")
+				world.findContinent("Europa")
 		}));
 		
 		objectives.add(new CompositeObjective(new IObjective[] {
 				new ConquerEntireContinentsObjective(new Continent[] {
-						world.findContinent("South America"),
-						world.findContinent("Europe")
+						world.findContinent("America do Sul"),
+						world.findContinent("Europa")
 				}),
 				new SoldierCountInLocationObjective(20, new Territory[] {
-						world.findTerritory("France")
+						world.findTerritory("Franca")
 				})
 		}));
 		
 		objectives.add(new ConquerEntireContinentsObjective(new Continent[] {
-				world.findContinent("North America"),
+				world.findContinent("America do Norte"),
 				world.findContinent("Africa")
 		}));
 		

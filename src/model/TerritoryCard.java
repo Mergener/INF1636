@@ -1,10 +1,9 @@
 package model;
 
-import java.awt.Image;
-
 import shared.Geometry;
 
 class TerritoryCard {
+	private int id;
 	private String description;
 	private Geometry geometry;
 	private Territory territory;
@@ -21,7 +20,12 @@ class TerritoryCard {
 		return territory;
 	}
 	
-	public TerritoryCard(String description, Geometry geometry, Territory territory) {
+	public int getId() {
+		return id;
+	}
+	
+	public TerritoryCard(int id, String description, Geometry geometry, Territory territory) {
+		this.id = id;
 		this.description = description;
 		this.geometry = geometry;
 		this.territory = territory;

@@ -5,7 +5,6 @@ import exceptions.InvalidAttack;
 import listeners.AttackListener;
 import shared.AttackSummary;
 import shared.Dice;
-import shared.GameState;
 import shared.Geometry;
 
 import java.util.Collections;
@@ -31,12 +30,7 @@ class Match {
 	public boolean hasStarted() {
 		return started;
 	}
-	
-	private GameState state;
-	public GameState getCurrentState() {
-		return state;
-	}
-	
+		
 	public World getWorld() {
 		return world;
 	}
@@ -44,24 +38,10 @@ class Match {
 	public List<Player> getPlayers() {
 		return Collections.unmodifiableList(players);
 	}
-
-	/*
-	 * @brief Randomly sorts players array.
-	 */
-	private void randomizePlayersArray() {
-		Random random = new Random();
-		
-		for (int i = 0; i < players.size(); ++i) {
-			Player p = players.get(i);
-			int rand = random.nextInt(players.size());
-			players.set(i, players.get(rand));
-			players.set(rand, p);
-		}
-	}
 	
 	public Match(List<Player> players, World world) throws NotEnoughPlayers {
 		if (players.size() < 3 || players.size() > 6) {
-			throw new NotEnoughPlayers("Invalid number of players. Must have between 3 and 6 players, inclusive.");
+			throw new NotEnoughPlayers("Número de jogadores inválido. Deve ser entre 3 e 6 jogadores.");
 		}
 		
 		this.world = world;
@@ -70,7 +50,6 @@ class Match {
 		for (Player p : players) {
 			this.players.add(p);
 		}
-		randomizePlayersArray();
 	}
 	
 	private void giveRandomObjectivesToPlayers(List<IObjective> availableObjectives) {
@@ -87,22 +66,30 @@ class Match {
 
 	private static final int JOKER_CARDS_COUNT = 2;
 	
+	private ArrayList<TerritoryCard> allCards = new ArrayList<TerritoryCard>();
 	private Deque<TerritoryCard> unclaimedTerritoryCards = new LinkedList<TerritoryCard>();
 	
 	public void addTerritoryCard(TerritoryCard c) {
 		unclaimedTerritoryCards.add(c);
 	}
 	
+	public TerritoryCard getCardById(int id) {
+		return allCards.get(id);
+	}
+	
 	private void generateTerritoryCards() {
 		for (Continent c : world.getContinents()) {
 			for (Territory t : c.getTerritories()) {				
-				TerritoryCard card = new TerritoryCard(t.getName(), Geometry.getRandomExceptJoker(), t);				
+				TerritoryCard card = new TerritoryCard(allCards.size(), t.getName(), Geometry.getRandomExceptJoker(), t);				
 				unclaimedTerritoryCards.addLast(card);
+				allCards.add(card);
 			}
 		}
 		
 		for (int i = 0; i < JOKER_CARDS_COUNT; ++i) {
-			unclaimedTerritoryCards.addLast(new TerritoryCard("Carta coringa.", Geometry.Joker, null));
+			TerritoryCard card = new TerritoryCard(allCards.size(), "Carta coringa.", Geometry.Joker, null);
+			unclaimedTerritoryCards.addLast(card);
+			allCards.add(card);
 		}
 	}
 		
@@ -272,17 +259,31 @@ class Match {
 		}
 	}
 	
+	public void terminateRound() {
+		Continent[] continents = world.getContinents();
+		
+		for (int i = 0; i < players.size(); ++i) {
+			for (int j = 0; j < continents.length; ++j) {
+				Player p = players.get(i);
+				Continent c = continents[j];
+				
+				if (p.hasEntireContinent(c)) {
+					p.addContinentalSoldiers(c, c.getValue());
+				}
+			}
+		}
+	}
+	
 	public void start() {		
 		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(world));
 		giveRandomTerritoriesToPlayers();
 		
 		started = true;
-		state = GameState.ArmyDistribution;
 				
 		for (int i = 0; i < matchStartListeners.size(); ++i) {
 			matchStartListeners.get(i).onMatchStart(this);
 		}
-	}
+	}	
 	
 	private static ArrayList<MatchStartListener> matchStartListeners = new ArrayList<MatchStartListener>();
 	

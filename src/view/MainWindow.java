@@ -1,9 +1,15 @@
 package view;
 
 import javax.swing.*;
+
+import controller.GameController;
+
 import java.awt.*;
 
 public class MainWindow extends Window {
+	
+	private GameController gameController;
+	
 	@Override
 	public void onStart() {		
 		JFrame frame = getFrame();
@@ -12,10 +18,14 @@ public class MainWindow extends Window {
 		frame.setPreferredSize(new Dimension(1280, 720));
 		frame.setLocationRelativeTo(null);			
 		
-		setCurrentView(new PlayerRegistrationView(this));
+		setCurrentView(new PlayerRegistrationView(this, gameController));
 		
 		frame.getContentPane().setLayout(new FlowLayout());	
 		frame.revalidate();
 		frame.pack();
+	}
+	
+	public MainWindow(GameController gc) {
+		this.gameController = gc;
 	}
 }

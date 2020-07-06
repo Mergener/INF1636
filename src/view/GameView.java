@@ -2,6 +2,8 @@ package view;
 
 import model.WarGame;
 import shared.AttackSummary;
+import shared.GameState;
+import shared.PlayerColor;
 import shared.Point;
 import java.awt.*;
 import java.awt.event.*;
@@ -10,9 +12,12 @@ import javax.swing.*;
 import controller.GameController;
 import exceptions.InvalidAttack;
 import exceptions.NotEnoughPlayers;
+import listeners.CurrentPlayerChangeListener;
+import listeners.GameStateChangeListener;
+
 import java.io.IOException;
 
-public class GameView extends View {
+public class GameView extends View implements CurrentPlayerChangeListener {
 
 	private WarGame warGame;
 	private WorldMap worldMap;
@@ -23,7 +28,8 @@ public class GameView extends View {
 	private enum MapClickBehaviour {
 		DisplayTerritoryInfo,
 		SelectAttackSource,
-		SelectAttackTarget
+		SelectAttackTarget,
+		PositionContinentalTroops
 	}
 	private MapClickBehaviour currentMapClickBehaviour = MapClickBehaviour.DisplayTerritoryInfo;
 	
@@ -38,15 +44,15 @@ public class GameView extends View {
 	@Override
 	protected void onEnter(View previousView) {
 		try {
-			gameController = new GameController(warGame);
-			warGame.start();
+			sidePanel = new GameViewSidePanel();
+			gameController.addGameStateChangeListener(sidePanel);
 			
 			JFrame frame = getWindow().getFrame();
 			Container contentPane = frame.getContentPane();
 			
-			frame.setLayout(new FlowLayout());
+			frame.setLayout(new FlowLayout());	
 			
-			sidePanel = new GameViewSidePanel(this);
+			gameController.startGame();		
 			
 			worldMap = new WorldMap(warGame);
 			
@@ -87,10 +93,23 @@ public class GameView extends View {
 				@Override
 				public void actionPerformed(ActionEvent ev) {
 					onCancelButtonClicked();
-					sidePanel.setActionModeEnabled(false);
 				}
 			});
-						
+			
+			sidePanel.getPositionContinentalTroopsButton().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ev) {
+					onPositionTroopsButtonClicked();
+				}
+			});
+			
+			sidePanel.getFinishTurnButton().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ev) {
+					gameController.finishPlayerTurn();
+				}
+			});
+												
 			contentPane.add(sidePanel);
 			
 			frame.revalidate();
@@ -99,17 +118,17 @@ public class GameView extends View {
 			frame.pack();			
 			
 		} catch (IOException ex) {
-			System.err.println("Error loading game background image.");
+			System.err.println("Erro carregando o background.");
 			ex.printStackTrace();
 			
 		} catch (NotEnoughPlayers e) {
-			// Nothing to be done
+			e.printStackTrace();
 		}
 	}
 	
 	private void displayTerritoryInfo(String territoryName) {
 		JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("%s\nNúmero de exércitos: %d\nDono: %s\n",territoryName,
-		warGame.getTerritorySoldierCount(territoryName),warGame.getTerritoryOwnerColor(territoryName)));
+		warGame.getTerritorySoldierCount(territoryName), warGame.getTerritoryOwnerColor(territoryName)));
 	}
 	
 	private void onAttackSourceSelected(String territoryName) {
@@ -159,8 +178,6 @@ public class GameView extends View {
 			onAttackFinished();
 			sidePanel.setActionModeEnabled(false);
 		}
-		
-		
 	}
 	
 	private void onAttackFinished() {
@@ -168,15 +185,27 @@ public class GameView extends View {
 		sidePanel.getContextLabel().setText("");
 	}
 	
-	protected void onCancelButtonClicked() {
-		switch (currentCancelButtonBehaviour) {		
+	private void onPositionContinentalTroopsTargetSelected(String territoryName) {
+		ContinentalTroopsPositioningWindow window = new ContinentalTroopsPositioningWindow(territoryName, gameController, getWindow());
+		window.start();
+	}
+	
+	private void onCancelButtonClicked() {
+		sidePanel.setActionModeEnabled(false);
+		
+		switch (currentCancelButtonBehaviour) {
 		case CancelAttack:
 			onAttackFinished();
 			break;
 			
 		default:
-			break;			
+			break;
 		}
+	}
+	
+	private void onPositionTroopsButtonClicked() {
+		sidePanel.setActionModeEnabled(true);
+		JOptionPane.showMessageDialog(getWindow().getFrame(), "Clique em um território para adicionar tropas nele.");
 	}
 	
 	protected void onMapTerritoryClicked(String territoryName) {
@@ -193,6 +222,10 @@ public class GameView extends View {
 			onAttackTargetSelected(territoryName);
 			break;
 			
+		case PositionContinentalTroops:
+			onPositionContinentalTroopsTargetSelected(territoryName);
+			break;
+			
 		default:
 			break;			
 		}
@@ -202,8 +235,22 @@ public class GameView extends View {
 	protected void onExit(View nextView) {
 	}
 	
-	public GameView(Window window, WarGame game) {
+	public GameView(Window window, GameController gc) {
 		super(window);
-		this.warGame = game;
+		this.gameController = gc;
+		this.warGame = gc.getWarGame();
+	}
+
+	private void updateCurrentPlayerLabel(PlayerColor newColor) {
+		try {
+			sidePanel.getCurrentPlayerLabel().setText(String.format("Vez de %s (%s)", warGame.getPlayerName(newColor), newColor.getName()));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void onCurrentPlayerChanged(PlayerColor newPlayerColor) {
+		updateCurrentPlayerLabel(newPlayerColor);
 	}
 }

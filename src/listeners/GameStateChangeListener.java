@@ -2,6 +2,6 @@ package listeners;
 
 import shared.GameState;
 
-public interface GameContextChangeListener {
+public interface GameStateChangeListener {
 	public void onGameStateChanged(GameState newState);
 }

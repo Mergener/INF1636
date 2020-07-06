@@ -1,10 +1,8 @@
-/data/
+/controller/
 /exceptions/
 /images/
+/listeners/
 /main/
 /model/
-/view/
-/observers/
-/listeners/
 /shared/
-/controller/
+/view/

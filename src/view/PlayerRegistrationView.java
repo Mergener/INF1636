@@ -3,6 +3,7 @@ package view;
 import java.util.ArrayList;
 import javax.swing.*;
 
+import controller.GameController;
 import exceptions.BadPlayerColorUsage;
 import exceptions.GameAlreadyStarted;
 import model.WarGame;
@@ -17,14 +18,14 @@ public class PlayerRegistrationView extends View {
 	private static final int MAX_PLAYER_COUNT = 6;
 	private static final int MIN_PLAYER_COUNT = 3;
 	
+	private GameController gameController;
+	
 	private int requestedPlayerCount = MIN_PLAYER_COUNT;
-	
-	private WarGame warGame;
-	
+		
 	private class PlayerSlot {
 		public JPanel panel;
 		public JLabel label;
-		public JComboBox colorComboBox;
+		public JComboBox<String> colorComboBox;
 		public JTextField nameTextField;
 	}
 	
@@ -37,9 +38,9 @@ public class PlayerRegistrationView extends View {
 			options[i] = String.format("%d", i + MIN_PLAYER_COUNT);
 		}
 
-		JLabel label = new JLabel("Enter the number of players:");
+		JLabel label = new JLabel("Insira o número de jogadores:");
 		
-		JComboBox playerCountComboBox = new JComboBox(options);
+		JComboBox<String> playerCountComboBox = new JComboBox<String>(options);
 		playerCountComboBox.setSelectedIndex(requestedPlayerCount - MIN_PLAYER_COUNT);
 		
 		playerCountComboBox.addItemListener(new ItemListener() {
@@ -68,11 +69,15 @@ public class PlayerRegistrationView extends View {
 			
 			slot.panel = new JPanel();
 			slot.label = new JLabel();
-			slot.colorComboBox = new JComboBox(PLAYER_COLORS);
-			slot.nameTextField = new JTextField();
-					
+			
+			slot.colorComboBox = new JComboBox<String>(PLAYER_COLORS);
+			slot.colorComboBox.setSelectedIndex(i);
+			
+			slot.nameTextField = new JTextField();					
 			slot.nameTextField.setPreferredSize(new Dimension(150, 20));
-			slot.label.setText(String.format("Player %d data: ", i + 1));
+			slot.nameTextField.setText(String.format("Jogador %d", i + 1));
+			
+			slot.label.setText(String.format("Informações do jogador %d : ", i + 1));
 					
 			slot.panel.add(slot.label);
 			slot.panel.add(slot.colorComboBox);
@@ -85,32 +90,38 @@ public class PlayerRegistrationView extends View {
 	}
 	
 	private void generateProcceedButton(Container c) {
-		JButton button = new JButton("Procceed");
+		JButton button = new JButton("Prosseguir");
 		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-				warGame = new WarGame();
-				
 				// Register all players to the war game:
 				try {
 					for (int i = 0; i < playerSlots.size(); ++i) {
 						PlayerSlot slot = playerSlots.get(i);
 						
 						String playerName = slot.nameTextField.getText();
+						
 						PlayerColor playerColor = PlayerColor.getColorByName((String)slot.colorComboBox.getSelectedItem());
+						System.out.printf("%s %s\n", playerColor.toString(), slot.colorComboBox.getSelectedItem());
 						
-						System.out.printf("Player %d: %s (color %s)\n", i + 1, playerName, playerColor.toString());
+						System.out.printf("Jogador %d: %s (cor %s)\n", i + 1, playerName, playerColor.toString());
 						
-						warGame.registerPlayer(playerName, playerColor);						
+						gameController.registerPlayer(playerName, playerColor);						
 					}
 				} catch (BadPlayerColorUsage e) {
-					JOptionPane.showMessageDialog(getWindow().getFrame(), "There cannot be more than one player using the same color.");
+					JOptionPane.showMessageDialog(getWindow().getFrame(), "Não pode haver mais de um jogador utilizando a mesma cor.");
+					
+					try {
+						gameController.unregisterAllPlayers();
+					} catch (GameAlreadyStarted ex) {
+						// Ignore
+					}
 					return;
 				} catch (GameAlreadyStarted e) {
-					// Nothing to be done
+					// Ignore
 				}
 				
-				getWindow().setCurrentView(new GameView(getWindow(), warGame));
+				getWindow().setCurrentView(new GameView(getWindow(), gameController));
 			}
 		});
 		
@@ -141,7 +152,8 @@ public class PlayerRegistrationView extends View {
 	protected void onExit(View nextView) {
 	}
 
-	public PlayerRegistrationView(Window window) {
+	public PlayerRegistrationView(Window window, GameController gc) {
 		super(window);
+		this.gameController = gc;
 	}
 }

@@ -15,7 +15,7 @@ public class PlayerObjectivesWindow extends Window {
 	private WarGame game;
 	private Window previousWindow;
 	
-	private JComboBox colorsComboBox;
+	private JComboBox<PlayerColor> colorsComboBox;
 	
 	public PlayerObjectivesWindow(WarGame game, Window previousWindow) {
 		this.game = game;
@@ -33,7 +33,7 @@ public class PlayerObjectivesWindow extends Window {
 		Container contentPane = frame.getContentPane();
 		contentPane.setLayout(new FlowLayout());
 		
-		colorsComboBox = new JComboBox(playerColors);		
+		colorsComboBox = new JComboBox<PlayerColor>(playerColors);		
 		contentPane.add(colorsComboBox);
 		
 		previousWindow.getFrame().setEnabled(false);
@@ -44,7 +44,7 @@ public class PlayerObjectivesWindow extends Window {
             }
 		});
 		
-		JButton button = new JButton("View");
+		JButton button = new JButton("Ver");
 		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
@@ -55,7 +55,7 @@ public class PlayerObjectivesWindow extends Window {
 				} catch (Exception ex) {
 					
 					StringBuilder sb = new StringBuilder();
-					sb.append("An error occurred when trying to display player objective:\n");
+					sb.append("Um erro ocorreu ao tentar exibir o objetivos dos players:\n");
 					sb.append(ex.getClass().getName());
 					StackTraceElement[] stack = ex.getStackTrace();
 					

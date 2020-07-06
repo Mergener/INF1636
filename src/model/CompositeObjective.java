@@ -13,7 +13,7 @@ public class CompositeObjective implements IObjective {
 
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("Complete the following objectives:\n");
+		sb.append("Complete os seguintes objetivos:\n");
 		for (IObjective o : objectives) {
 			sb.append(o.getDescription() + "\n");
 		}

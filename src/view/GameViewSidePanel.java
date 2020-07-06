@@ -1,19 +1,23 @@
 package view;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-import listeners.GameContextChangeListener;
-import model.WarGame;
+import listeners.GameStateChangeListener;
 import shared.GameState;
 
-public class GameViewSidePanel extends JPanel implements GameContextChangeListener {
+public class GameViewSidePanel extends JPanel implements GameStateChangeListener {
 
 	private static final long serialVersionUID = 4007259948559007014L;
 	
-	private GameView gameView;
-		
+	private JLabel currentPlayerLabel;
+	public JLabel getCurrentPlayerLabel() {
+		return currentPlayerLabel;
+	}
+	
 	private JLabel contextLabel;
 	public JLabel getContextLabel() {
 		return contextLabel;
@@ -28,10 +32,30 @@ public class GameViewSidePanel extends JPanel implements GameContextChangeListen
 	public JButton getAttackButton() {
 		return attackButton;
 	}
-	
+		
 	private JButton cancelButton;
 	public JButton getCancelButton() {
 		return cancelButton;
+	}
+	
+	private JButton tradeCardsButton;
+	public JButton getTradeCardsButton() {
+		return tradeCardsButton;
+	}
+	
+	private JButton finishTurnButton;
+	public JButton getFinishTurnButton() {
+		return finishTurnButton;
+	}
+	
+	private JButton positionGlobalTroopsButton;
+	public JButton getPositionGlobalTroopsButton() {
+		return positionGlobalTroopsButton;
+	}
+	
+	private JButton positionContinentalTroopsButton;
+	public JButton getPositionContinentalTroopsButton() {
+		return positionContinentalTroopsButton;
 	}
 
 	/**
@@ -44,12 +68,19 @@ public class GameViewSidePanel extends JPanel implements GameContextChangeListen
 	public void setActionModeEnabled(boolean enabled) {
 		objectivesButton.setEnabled(!enabled);
 		attackButton.setEnabled(!enabled);
+		tradeCardsButton.setEnabled(!enabled);
+		finishTurnButton.setEnabled(!enabled);
+		positionGlobalTroopsButton.setEnabled(!enabled);
+		positionContinentalTroopsButton.setEnabled(!enabled);
 		
 		cancelButton.setEnabled(enabled);
 	}
 	
 	private void generate() {
 		setLayout(new GridLayout(10, 1));
+
+		currentPlayerLabel = new JLabel();
+		add(currentPlayerLabel);
 		
 		contextLabel = new JLabel();
 		add(contextLabel);
@@ -57,17 +88,29 @@ public class GameViewSidePanel extends JPanel implements GameContextChangeListen
 		objectivesButton = new JButton("Ver objetivos");
 		add(objectivesButton);
 		
+		positionGlobalTroopsButton = new JButton("Posicionar exércitos globais");
+		add(positionGlobalTroopsButton);
+		
+		positionContinentalTroopsButton = new JButton("Posicionar exércitos continentais");
+		add(positionContinentalTroopsButton);
+		
 		attackButton = new JButton("Atacar");
 		add(attackButton);
+		
+		tradeCardsButton = new JButton("Troca de cartas");
+		add(tradeCardsButton);
+		
+		finishTurnButton = new JButton("Finalizar Turno");
+		add(finishTurnButton);
 		
 		cancelButton = new JButton("Cancelar");
 		add(cancelButton);
 		
+		contextLabel.setText("");
 		setActionModeEnabled(false);
 	}
 	
-	public GameViewSidePanel(GameView gameView) {
-		this.gameView = gameView;
+	public GameViewSidePanel() {
 		generate();
 	}
 
@@ -76,11 +119,21 @@ public class GameViewSidePanel extends JPanel implements GameContextChangeListen
 		switch (newCtx) {
 		case ArmyDistribution:
 			getAttackButton().setEnabled(false);
+			getPositionContinentalTroopsButton().setEnabled(true);
 			break;
 			
 		case PlayerAction:
 			getAttackButton().setEnabled(true);
+			getPositionContinentalTroopsButton().setEnabled(false);
+			break;
+			
+		default:
 			break;
 		}		
+	}
+}
+
+class FinishButtonHandler {
+	public void onFinish() {
 	}
 }

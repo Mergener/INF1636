@@ -1,11 +1,15 @@
 package main;
 
-import view.ViewTester;
+import controller.GameController;
+import view.MainWindow;
 
 public class Program {
 
 	public static void main(String[] args) {
-		ViewTester.testView();
+		GameController controller = new GameController();
+		
+		MainWindow mainWindow = new MainWindow(controller);
+		mainWindow.start();
 	}
-
+	
 }

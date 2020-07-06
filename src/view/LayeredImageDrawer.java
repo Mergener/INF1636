@@ -4,12 +4,15 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.awt.Dimension;
-import java.awt.Font;
-
 import javax.swing.JPanel;
 
 public class LayeredImageDrawer extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8331187226403623387L;
+
 	private ArrayList<BufferedImage> layers = new ArrayList<BufferedImage>();
 	
 	private int highestWidth = 0;

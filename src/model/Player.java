@@ -2,12 +2,12 @@ package model;
 
 import java.util.List;
 
+import exceptions.InvalidContinentalSoldierExpenditure;
 import shared.PlayerColor;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.awt.Color;
 import java.util.ArrayList;
 
 class Player {
@@ -121,13 +121,13 @@ class Player {
 	 * @param t The territory to place the soldiers.
 	 * @param amount The number of unspent continental soldiers to be spent.
 	 */
-	public void spendContinentalSoldiers(Territory t, int amount) throws Exception {
+	public void spendContinentalSoldiers(Territory t, int amount) throws InvalidContinentalSoldierExpenditure {
 		if (t.getOwner() != this) {
-			throw new Exception("Tried spending continental soldiers in territory not owned by player.");
+			throw new InvalidContinentalSoldierExpenditure("Tentou posicionar tropas continentais bônus em um território que o jogador não possui.");
 		}
 		Integer continentalSoldierCount = unspentContinentalSoldiers.get(t.getContinent());
 		if (continentalSoldierCount == null || continentalSoldierCount < amount) {
-			throw new Exception("Tried spending too many continental soldiers in territory.");
+			throw new InvalidContinentalSoldierExpenditure("Tentou posicionar tropas continentais bônus demais.");
 		}
 		
 		continentalSoldierCount -= amount;

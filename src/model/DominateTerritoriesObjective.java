@@ -8,7 +8,7 @@ class DominateTerritoriesObjective implements IObjective {
 	public String getDescription() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("Dominate all the following territories:\n");
+		sb.append("Domine os seguintes territórios:\n");
 		for (Territory t : targets) {
 			sb.append("\t" + t.getName() + "\n");
 		}
