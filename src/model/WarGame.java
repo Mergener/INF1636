@@ -317,6 +317,10 @@ public class WarGame {
 		return ids;
 	}
 	
+	public void performCardsTrade(PlayerColor player, int card1, int card2, int card3) throws PlayerNotFound {
+		match.performCardsTrade(getPlayerByColor(player),match.getCardById(card1),match.getCardById(card2),match.getCardById(card3));
+	}
+	
 	public String getTerritoryCardDescription(int cardId) {
 		return match.getCardById(cardId).getDescription();
 	}

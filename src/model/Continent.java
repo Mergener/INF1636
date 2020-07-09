@@ -43,6 +43,7 @@ class Continent {
 		
 		for (Territory t : territories) {
 			this.territories.put(t.getName(), t);
+			t.setContinent(this);
 		}
 	}
 }

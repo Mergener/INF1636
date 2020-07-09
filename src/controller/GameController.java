@@ -143,6 +143,15 @@ public class GameController {
 		}
 	}
 	
+	public void performCardTrade(int card1, int card2, int card3) {
+		try {
+			game.performCardsTrade(getCurrentPlayerColor(), card1, card2, card3);
+		} catch (PlayerNotFound e) {
+			// Ignore
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Starts the game. At least 3 and at most 6 players must be registered before
 	 * this gets called.

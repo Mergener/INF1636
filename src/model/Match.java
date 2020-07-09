@@ -278,6 +278,12 @@ class Match {
 		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(world));
 		giveRandomTerritoriesToPlayers();
 		
+		for(int i = 0; i < players.size(); ++i) {
+			players.get(i).addTerritoryCard(getCardById(0));
+			players.get(i).addTerritoryCard(getCardById(1));
+			players.get(i).addTerritoryCard(getCardById(2));
+		}
+		
 		started = true;
 				
 		for (int i = 0; i < matchStartListeners.size(); ++i) {

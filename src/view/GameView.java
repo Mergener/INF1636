@@ -109,6 +109,15 @@ public class GameView extends View implements CurrentPlayerChangeListener {
 					gameController.finishPlayerTurn();
 				}
 			});
+			
+			sidePanel.getTradeCardsButton().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ev) {
+					PlayerCardTradeWindow playerCardTradeWindow = new PlayerCardTradeWindow(gameController, getWindow());
+					
+					playerCardTradeWindow.start();
+				}
+			});
 												
 			contentPane.add(sidePanel);
 			

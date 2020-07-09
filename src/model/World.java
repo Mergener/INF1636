@@ -99,7 +99,7 @@ class World {
 		world.continents[0] = new Continent("America do Sul", new Territory[] {
 				brazil, argentina,
 				peru, venezuela
-		}, 2, new Color(0, 104, 58));				
+		}, 2, new Color(0, 104, 58));
 		
 		mexico.addNeighbour(venezuela);
 		mexico.addNeighbour(texas);
