@@ -3,15 +3,23 @@ package view;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
-import listeners.GameStateChangeListener;
-import shared.GameState;
+import controller.GameController;
+import controller.GameState;
+import exceptions.PlayerNotFound;
+import listeners.ICurrentPlayerChangeListener;
+import listeners.IGameStateChangeListener;
+import model.WarGame;
+import shared.PlayerColor;
 
-public class GameViewSidePanel extends JPanel implements GameStateChangeListener {
+public class GameViewSidePanel extends JPanel implements IGameStateChangeListener, ICurrentPlayerChangeListener {
 
 	private static final long serialVersionUID = 4007259948559007014L;
+	
+	private GameController controller;
 	
 	private JLabel currentPlayerLabel;
 	public JLabel getCurrentPlayerLabel() {
@@ -57,27 +65,63 @@ public class GameViewSidePanel extends JPanel implements GameStateChangeListener
 	public JButton getPositionContinentalTroopsButton() {
 		return positionContinentalTroopsButton;
 	}
+	
+	private JButton moveTroopsButton;
+	public JButton getMoveTroopsButton() {
+		return moveTroopsButton;
+	}
+	
+	private ArrayList<JButton> disabledButtonsOnActionMode = new ArrayList<JButton>();
 
 	/**
 	 * Controls whether the action mode is enabled or not.
 	 * 
 	 * When action mode is enabled, all buttons are disabled except for cancel button.
-	 * When action mode is disabled, all buttons are enabled except for cancel button.
+	 * When action mode is disabled, all buttons that were disabled when the action mode was initialized
+	 * become enabled again, and the cancel buttons gets disabled.
 	 * 
 	 */
-	public void setActionModeEnabled(boolean enabled) {
-		objectivesButton.setEnabled(!enabled);
-		attackButton.setEnabled(!enabled);
-		tradeCardsButton.setEnabled(!enabled);
-		finishTurnButton.setEnabled(!enabled);
-		positionGlobalTroopsButton.setEnabled(!enabled);
-		positionContinentalTroopsButton.setEnabled(!enabled);
-		
-		cancelButton.setEnabled(enabled);
+	public void setActionModeEnabled(boolean enabled) {		
+		if (enabled) {		
+			if (objectivesButton.isEnabled()) {
+				objectivesButton.setEnabled(false);
+				disabledButtonsOnActionMode.add(objectivesButton);
+			}
+			if (attackButton.isEnabled()) {
+				attackButton.setEnabled(false);
+				disabledButtonsOnActionMode.add(attackButton);
+			}
+			if (tradeCardsButton.isEnabled()) {
+				tradeCardsButton.setEnabled(false);
+				disabledButtonsOnActionMode.add(tradeCardsButton);
+			}
+			if (finishTurnButton.isEnabled()) {
+				finishTurnButton.setEnabled(false);
+				disabledButtonsOnActionMode.add(finishTurnButton);
+			}
+			if (positionContinentalTroopsButton.isEnabled()) {
+				positionContinentalTroopsButton.setEnabled(false);
+				disabledButtonsOnActionMode.add(positionContinentalTroopsButton);
+			}
+			if (positionGlobalTroopsButton.isEnabled()) {
+				positionGlobalTroopsButton.setEnabled(false);
+				disabledButtonsOnActionMode.add(positionGlobalTroopsButton);
+			}
+			
+			cancelButton.setEnabled(true);
+		} else {
+			for (int i = 0; i < disabledButtonsOnActionMode.size(); ++i) {
+				disabledButtonsOnActionMode.get(i).setEnabled(true);
+			}
+			
+			cancelButton.setEnabled(false);
+			
+			disabledButtonsOnActionMode.clear();
+		}
 	}
 	
 	private void generate() {
-		setLayout(new GridLayout(10, 1));
+		setLayout(new GridLayout(12, 1));
 
 		currentPlayerLabel = new JLabel();
 		add(currentPlayerLabel);
@@ -87,20 +131,27 @@ public class GameViewSidePanel extends JPanel implements GameStateChangeListener
 		
 		objectivesButton = new JButton("Ver objetivos");
 		add(objectivesButton);
+
+		tradeCardsButton = new JButton("Ver cartas");
+		add(tradeCardsButton);
 		
 		positionGlobalTroopsButton = new JButton("Posicionar exércitos globais");
 		add(positionGlobalTroopsButton);
+		positionGlobalTroopsButton.setEnabled(false);
 		
 		positionContinentalTroopsButton = new JButton("Posicionar exércitos continentais");
 		add(positionContinentalTroopsButton);
+		positionContinentalTroopsButton.setEnabled(false);
 		
 		attackButton = new JButton("Atacar");
 		add(attackButton);
+		attackButton.setEnabled(false);
 		
-		tradeCardsButton = new JButton("Troca de cartas");
-		add(tradeCardsButton);
+		moveTroopsButton = new JButton("Mover tropas");
+		add(moveTroopsButton);
+		moveTroopsButton.setEnabled(false);
 		
-		finishTurnButton = new JButton("Finalizar Turno");
+		finishTurnButton = new JButton("Finalizar Jogada");
 		add(finishTurnButton);
 		
 		cancelButton = new JButton("Cancelar");
@@ -110,30 +161,77 @@ public class GameViewSidePanel extends JPanel implements GameStateChangeListener
 		setActionModeEnabled(false);
 	}
 	
-	public GameViewSidePanel() {
+	public GameViewSidePanel(GameController controller) {
+		this.controller = controller;
+		
 		generate();
+
+		controller.addCurrentPlayerChangeListener(this);
+		controller.addGameStateChangeListener(this);
+		
+		onGameStateChanged(controller.getGameState());
+		onCurrentPlayerChanged(controller.getCurrentPlayerColor());
 	}
+	
+	private GameState previousState = null;
 
 	@Override
-	public void onGameStateChanged(GameState newCtx) {
+	public void onGameStateChanged(GameState newCtx) {	
+		if (newCtx == previousState) {
+			return;
+		}
+		
+		// A new game state has taken place, activate correct buttons accordingly.
 		switch (newCtx) {
 		case ArmyDistribution:
-			getAttackButton().setEnabled(false);
 			getPositionContinentalTroopsButton().setEnabled(true);
+			getPositionGlobalTroopsButton().setEnabled(true);
 			break;
 			
-		case PlayerAction:
+		case Combat:
 			getAttackButton().setEnabled(true);
-			getPositionContinentalTroopsButton().setEnabled(false);
+			break;
+			
+		case ArmyMovement:
+			getMoveTroopsButton().setEnabled(true);
 			break;
 			
 		default:
 			break;
-		}		
+		}	
+		
+		// For the game state that has just finished, deactivate its buttons accordingly.
+		if (previousState != null) {
+			switch (previousState) {				
+			case ArmyDistribution:
+				getPositionContinentalTroopsButton().setEnabled(false);
+				getPositionGlobalTroopsButton().setEnabled(false);				
+				break;
+				
+			case Combat:
+				getAttackButton().setEnabled(false);
+				break;
+				
+			case ArmyMovement:
+				getMoveTroopsButton().setEnabled(false);
+				break;
+				
+			default:
+				break;
+			}
+		}
+		
+		previousState = newCtx;	
 	}
-}
+	
 
-class FinishButtonHandler {
-	public void onFinish() {
+	@Override
+	public void onCurrentPlayerChanged(PlayerColor newPlayerColor) {
+		try {
+			getCurrentPlayerLabel().setText(String.format("Vez de: %s (%s)", controller.getWarGame().getPlayerName(newPlayerColor), newPlayerColor.toString()));
+		} catch (PlayerNotFound e) {
+			// Ignore
+			e.printStackTrace();
+		}
 	}
 }

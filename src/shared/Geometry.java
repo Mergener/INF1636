@@ -9,6 +9,22 @@ public enum Geometry {
 	
 	Joker;
 	
+	public boolean isSame(Geometry other) {
+		if (this == Joker || other == Joker) {
+			return true;
+		}
+		
+		return this == other;
+	}
+	
+	public boolean isNotSame(Geometry other) {
+		if (this == Joker || other == Joker) {
+			return true;
+		}
+
+		return this != other;
+	}
+	
 	public static Geometry getRandomExceptJoker() {
 		
 		Random random = new Random();

@@ -5,30 +5,30 @@ import java.util.Random;
 
 import exceptions.BadPlayerColorUsage;
 import exceptions.GameAlreadyStarted;
+import exceptions.IllegalCardsTrade;
+import exceptions.IllegalMigration;
+import exceptions.IllegalPlayEnd;
 import exceptions.InvalidAttack;
 import exceptions.InvalidContinentalSoldierExpenditure;
+import exceptions.InvalidGlobalSoldierExpenditure;
 import exceptions.NotEnoughPlayers;
 import exceptions.PlayerNotFound;
-import listeners.CurrentPlayerChangeListener;
-import listeners.GameStateChangeListener;
+import listeners.IAttackListener;
+import listeners.ICurrentPlayerChangeListener;
+import listeners.IGameStateChangeListener;
 import model.WarGame;
 import shared.AttackSummary;
-import shared.GameState;
 import shared.PlayerColor;
+import view.GameView;
 
 /**
  * Keeps track of the current state of a war game, including each players' turn, and manipulates it. 
  */
 public class GameController {
 
-	private WarGame game;
 	private ArrayList<PlayerColor> players = new ArrayList<PlayerColor>();
 	
-	private GameState gameState;
-	private ArrayList<GameStateChangeListener> gameStateChangeListeners = new ArrayList<GameStateChangeListener>();
-	
 	private int currentPlayerIndex;
-
 	public PlayerColor getCurrentPlayerColor() {
 		return players.get(currentPlayerIndex);
 	}
@@ -39,24 +39,12 @@ public class GameController {
 		}
 		
 		this.currentPlayerIndex = index;
-		for (int i = 0; i < currentPlayerChangeListeners.size(); ++i) {
-			currentPlayerChangeListeners.get(i).onCurrentPlayerChanged(getCurrentPlayerColor());
+		for (int i = 0; i < iCurrentPlayerChangeListeners.size(); ++i) {
+			iCurrentPlayerChangeListeners.get(i).onCurrentPlayerChanged(getCurrentPlayerColor());
 		}		
 	}
 	
-	private ArrayList<CurrentPlayerChangeListener> currentPlayerChangeListeners = new ArrayList<CurrentPlayerChangeListener>(); 
-	public void addCurrentPlayerChangeListener(CurrentPlayerChangeListener l) {
-		currentPlayerChangeListeners.add(l);
-	}
-	
-	public void removeCurrentPlayerChangeListener(CurrentPlayerChangeListener l) {
-		currentPlayerChangeListeners.remove(l);
-	}
-	
-	public WarGame getWarGame() {
-		return game;
-	}
-	
+	private GameState gameState;
 	public GameState getGameState() {
 		return gameState;
 	}
@@ -64,10 +52,34 @@ public class GameController {
 	private void setGameState(GameState newState) {
 		this.gameState = newState;
 		
-		for (int i = 0; i < gameStateChangeListeners.size(); ++i) {
-			gameStateChangeListeners.get(i).onGameStateChanged(newState);
+		for (int i = 0; i < iGameStateChangeListeners.size(); ++i) {
+			iGameStateChangeListeners.get(i).onGameStateChanged(newState);
 		}
 	}
+	
+	private ArrayList<IGameStateChangeListener> iGameStateChangeListeners = new ArrayList<IGameStateChangeListener>();
+	public void addGameStateChangeListener(IGameStateChangeListener l) {
+		iGameStateChangeListeners.add(l);
+	}
+	
+	public void removeGameStateChangeListener(IGameStateChangeListener l) {
+		iGameStateChangeListeners.remove(l);
+	}
+	
+	private ArrayList<ICurrentPlayerChangeListener> iCurrentPlayerChangeListeners = new ArrayList<ICurrentPlayerChangeListener>(); 
+	public void addCurrentPlayerChangeListener(ICurrentPlayerChangeListener l) {
+		iCurrentPlayerChangeListeners.add(l);
+	}
+	
+	public void removeCurrentPlayerChangeListener(ICurrentPlayerChangeListener l) {
+		iCurrentPlayerChangeListeners.remove(l);
+	}
+
+	private WarGame game;
+	public WarGame getWarGame() {
+		return game;
+	}
+
 	
 	public void registerPlayer(String name, PlayerColor color) throws BadPlayerColorUsage, GameAlreadyStarted {
 		game.registerPlayer(name, color);
@@ -78,13 +90,6 @@ public class GameController {
 		game.unregisterAllPlayers();
 	}
 	
-	public void addGameStateChangeListener(GameStateChangeListener l) {
-		gameStateChangeListeners.add(l);
-	}
-	
-	public void removeGameStateChangeListener(GameStateChangeListener l) {
-		gameStateChangeListeners.remove(l);
-	}
 	
 	/**
 	 * Randomly sorts players array.
@@ -102,6 +107,19 @@ public class GameController {
 	}
 	
 	/**
+	 * @return True if the current player must perform cards trade.
+	 */
+	public boolean cardsTradeRequired() {
+		try {
+			return game.getTerritoryCardsIdsOwnedByPlayer(getCurrentPlayerColor()).length >= 5;
+		} catch (PlayerNotFound e) {
+			// Ignore
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
 	 * Triggers an attack from a territory to another.
 	 * 
 	 * The source territory must be owned by the current player and have more than 1 troop placed in it.
@@ -115,6 +133,10 @@ public class GameController {
 	 */
 	public AttackSummary requestAttack(String sourceTerritory, String targetTerritory) throws InvalidAttack {
 		try {
+			if (cardsTradeRequired()) {
+				throw new InvalidAttack("Não é possível realizar ataque: ainda é necessário realizar uma troca de cartas.");
+			}
+			
 			AttackSummary summary = game.performAttack(getCurrentPlayerColor(), sourceTerritory, targetTerritory);
 			return summary;
 		} catch (PlayerNotFound ex) {
@@ -139,11 +161,33 @@ public class GameController {
 			return game.getPlayerUnspentContinentalSoldierCount(getCurrentPlayerColor(), game.getTerritoryContinentName(territoryName));
 		} catch (PlayerNotFound e) {
 			// Ignore
+			e.printStackTrace();
 			return 0;
 		}
 	}
 	
-	public void performCardTrade(int card1, int card2, int card3) {
+	/**
+	 * Spends the current player's global soldiers in the specified territory.
+	 * 
+	 * @param territoryName The territory to spend soldiers on.
+	 * @param soldierCount The amount of soldiers to be spent.
+	 * @return The remaining amount of global soldiers for the player.
+	 * @throws InvalidGlobalSoldierExpenditure Thrown if the player either doesn't own the specified territory or the requested
+	 * amount of soldiers surpass the number of unspent global soldiers the current player has.
+	 */
+	public int spendGlobalSoldiers(String territoryName, int soldierCount) throws InvalidGlobalSoldierExpenditure  {
+		try {
+			game.spendPlayerGlobalSoldiers(getCurrentPlayerColor(), territoryName, soldierCount);
+			
+			return game.getPlayerUnspentGlobalSoldierCount(getCurrentPlayerColor());
+		} catch (PlayerNotFound e) {
+			// Ignore
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public void performCardTrade(int card1, int card2, int card3) throws IllegalCardsTrade {
 		try {
 			game.performCardsTrade(getCurrentPlayerColor(), card1, card2, card3);
 		} catch (PlayerNotFound e) {
@@ -169,31 +213,92 @@ public class GameController {
 	}
 	
 	/**
-	 * Finishes the current player's turn. This might trigger a game state change.
+	 * Performs migration of soldier from a source territory to a target territory.
+	 * 
+	 * @param srcTerritory The source territory.
+	 * @param targetTerritory The target territory.
+	 * @param amount The amount of soldiers to migrate.
+	 * @throws IllegalMigration If the migration cannot be done. Possible reasons are the two territories have
+	 * different owners or the amount of soldiers surpass the amount of soldiers that can migrate to that specified territory.
 	 */
-	public void finishPlayerTurn() {
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+	public void performMigration(String srcTerritory, String targetTerritory, int amount) throws IllegalMigration {
+		game.performMigration(srcTerritory, targetTerritory, amount);
+	}
+	
+	/**
+	 * Finishes the current player's play. This might trigger a game state change and/or a current player change.
+	 * @throws IllegalPlayEnd There are still pending actions to be performed by the current player before the current
+	 * play can be finished.
+	 */
+	public void finishCurrentPlay() throws IllegalPlayEnd {
+		String errMsg = "Não é possível finalizar a jogada:";
+		boolean err = false;
 		
-		if (currentPlayerIndex == 0) {
+		try {			
 			switch (gameState) {
 			
 			case ArmyDistribution:
-				setGameState(GameState.PlayerAction);
+				// Can only go to the next turn if all the player's continental and global soldiers have been positioned.
+				String[] continents = game.getAllContinentsNames();
+				int count;
+				
+				for (int i = 0; i < continents.length; ++i) {
+					count = game.getPlayerUnspentContinentalSoldierCount(getCurrentPlayerColor(), continents[i]); 
+					if (count != 0) {
+						err = true;
+						errMsg += String.format("\n\tJogador não posicionou %d soldados continentais em %s", count, continents[i]);
+					}
+				}
+				
+				count = game.getPlayerUnspentGlobalSoldierCount(getCurrentPlayerColor());
+				if (count != 0) {
+					err = true;
+					errMsg += String.format("\n\tJogador não posicionou %d soldados globais.", count);
+				}
+				
+				if (err) {
+					throw new IllegalPlayEnd(errMsg);
+				} else {
+					setGameState(GameState.Combat);
+				}				
+				
 				break;
-
-			case PlayerAction:
-				setGameState(GameState.ArmyDistribution);				
-				game.terminateRound();
+				
+			case Combat:
+				if (cardsTradeRequired()) {
+					errMsg += "O jogador possui 5 cartas de território, é necessário realizar uma troca de cartas. Aperte o botão 'Ver cartas' para realizar a troca";
+					throw new IllegalPlayEnd(errMsg);
+				}
+				
+				setGameState(GameState.ArmyMovement);
+				break;
+				
+			case ArmyMovement:
+				int newPlayerIndex = (currentPlayerIndex + 1) % players.size();
+				setCurrentPlayerIndex(newPlayerIndex);
+				
+				if (newPlayerIndex == 0) {
+					game.terminateRound();
+				}
+				
+				setGameState(GameState.ArmyDistribution);
 				break;
 				
 			default:
-				break;				
+				break;
 			}
+		} catch (PlayerNotFound e) {
+			// Ignore
+			e.printStackTrace();
 		}
 	}
-	
+		
 	public GameController() {
 		this.game = new WarGame();
 		this.gameState = GameState.Nothing;		
+	}
+
+	public void addAttackListener(IAttackListener attackListener) {
+		game.addAttackListener(attackListener);		
 	}
 }

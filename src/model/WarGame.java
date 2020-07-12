@@ -3,8 +3,8 @@ package model;
 import java.util.List;
 import java.util.ArrayList;
 import exceptions.*;
-import listeners.AttackListener;
-import listeners.TerritoryListener;
+import listeners.IAttackListener;
+import listeners.ITerritoryListener;
 import shared.AttackSummary;
 import shared.Geometry;
 import shared.PlayerColor;
@@ -98,7 +98,7 @@ public class WarGame {
 			}
 		}
 	
-		players.add(new Player(playerName, color));
+		players.add(new Player(world, playerName, color));
 	}
 	
 	/**
@@ -217,7 +217,7 @@ public class WarGame {
 	 * @param territoryName The territory to listen to.
 	 * @param l The object that will listen to the changes.
 	 */
-	public void addTerritoryListener(String territoryName, TerritoryListener l) {
+	public void addTerritoryListener(String territoryName, ITerritoryListener l) {
 		world.findTerritory(territoryName).addListener(l);
 	}
 	
@@ -237,7 +237,7 @@ public class WarGame {
 	 * occur.
 	 * @param l The listener.
 	 */
-	public void addAttackListener(AttackListener l) {
+	public void addAttackListener(IAttackListener l) {
 		match.addAttackListener(l);
 	}
 	
@@ -263,6 +263,34 @@ public class WarGame {
 	 */
 	public String getTerritoryContinentName(String territoryName) {
 		return world.findTerritory(territoryName).getContinent().getName();
+	}
+	
+	/**
+	 * Returns the unspent global soldier count for a player at a specified continent.
+	 * 
+	 * @param player The color of the player to get unspent global soldiers count.
+	 * @return The unspent global soldiers count.
+	 * @throws PlayerNotFound Thrown if the player was not found.
+	 */
+	public int getPlayerUnspentGlobalSoldierCount(PlayerColor player) throws PlayerNotFound {
+		return getPlayerByColor(player).getUnspentGlobalSoldierCount();
+	}
+	
+	/**
+	 * Spends player's unspent global soldiers in a territory.
+	 * 
+	 * @param player The player to spend soldiers.
+	 * @param territoryName The territory in which the soldiers will be spent on.
+	 * @param amount The amount of soldiers to be spent.
+	 * @throws PlayerNotFound Thrown if the specified player color is not registerd.
+	 * @throws InvalidGlobalSoldierExpenditure Thrown if the player either does not own the specified territory or the amount of soldiers requested surpass the
+	 * number of unspent global soldiers the player has.
+	 */
+	public void spendPlayerGlobalSoldiers(PlayerColor player, String territoryName, int amount) throws PlayerNotFound, InvalidGlobalSoldierExpenditure {
+		Player p = getPlayerByColor(player);
+		Territory t = world.findTerritory(territoryName);
+		
+		p.spendGlobalSoldiers(t, amount);
 	}
 	
 	/**
@@ -317,7 +345,30 @@ public class WarGame {
 		return ids;
 	}
 	
-	public void performCardsTrade(PlayerColor player, int card1, int card2, int card3) throws PlayerNotFound {
+	/**
+	 * Returns the maximum amount of troops that can be migrated from the specified territory to another.
+	 * @param territoryName The territory.
+	 * @return The maximum amount.
+	 */
+	public int getMaximumEligibleMigrationTroopsCount(String territoryName) {
+		return match.getMaximumEligibleMigrationTroopsCount(world.findTerritory(territoryName));
+	}
+	
+	/**
+	 * Performs migration of soldier from a source territory to a target territory.
+	 * 
+	 * @param srcTerritory The source territory.
+	 * @param targetTerritory The target territory.
+	 * @param amount The amount of soldiers to migrate.
+	 * @throws IllegalMigration If the migration cannot be done. Possible reasons are the two territories have
+	 * different owners, the territories are not connected or the amount of soldiers surpass the amount of soldiers that can migrate 
+	 * to that specified territory.
+	 */
+	public void performMigration(String srcTerritory, String targetTerritory, int amount) throws IllegalMigration  {
+		match.performMigration(world.findTerritory(srcTerritory), world.findTerritory(targetTerritory), amount);
+	}
+	
+	public void performCardsTrade(PlayerColor player, int card1, int card2, int card3) throws PlayerNotFound, IllegalCardsTrade {
 		match.performCardsTrade(getPlayerByColor(player),match.getCardById(card1),match.getCardById(card2),match.getCardById(card3));
 	}
 	

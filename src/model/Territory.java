@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-import listeners.TerritoryListener;
+import listeners.ITerritoryListener;
 import shared.Point;
 
 class Territory {
@@ -15,11 +15,11 @@ class Territory {
 	
 	private ArrayList<Territory> neighbours = new ArrayList<Territory>();
 	
-	private ArrayList<TerritoryListener> listeners = new ArrayList<TerritoryListener>();
-	public void addListener(TerritoryListener l) {
+	private ArrayList<ITerritoryListener> listeners = new ArrayList<ITerritoryListener>();
+	public void addListener(ITerritoryListener l) {
 		listeners.add(l);
 	}
-	public void removeTerritoryListener(TerritoryListener l) {
+	public void removeTerritoryListener(ITerritoryListener l) {
 		listeners.remove(l);
 	}
 	

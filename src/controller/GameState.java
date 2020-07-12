@@ -1,4 +1,4 @@
-package shared;
+package controller;
 
 public enum GameState {
 	
@@ -10,7 +10,12 @@ public enum GameState {
 	/**
 	 * Players are currently deciding whether they should attack other players.
 	 */
-	PlayerAction,
+	Combat,
+	
+	/**
+	 * Players are repositioning their troops across the map.
+	 */
+	ArmyMovement,
 	
 	Nothing
 	

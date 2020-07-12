@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class PlayerRegistrationView extends View {
-	private static final String[] PLAYER_COLORS =  {"Azul", "Vermelho", "Amarelo", "Verde", "Preto", "Branco"};
+	private static final String[] PLAYER_COLORS =  {"Azul", "Vermelho", "Amarelo", "Verde", "Preto", "Branco" };
 	
 	private static final int MAX_PLAYER_COUNT = 6;
 	private static final int MIN_PLAYER_COUNT = 3;
@@ -44,6 +44,7 @@ public class PlayerRegistrationView extends View {
 		playerCountComboBox.setSelectedIndex(requestedPlayerCount - MIN_PLAYER_COUNT);
 		
 		playerCountComboBox.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(ItemEvent event) {
 				if (event.getStateChange() == ItemEvent.SELECTED) {
 					int index = playerCountComboBox.getSelectedIndex();
@@ -63,7 +64,7 @@ public class PlayerRegistrationView extends View {
 		playerSlots.clear();
 	}
 	
-	private void generatePlayerSlotsPanels(Container c) {
+	private void generatePlayerSlotsPanels(Container c) {		
 		for (int i = 0; i < requestedPlayerCount; ++i) {
 			PlayerSlot slot = new PlayerSlot();
 			
@@ -82,6 +83,8 @@ public class PlayerRegistrationView extends View {
 			slot.panel.add(slot.label);
 			slot.panel.add(slot.colorComboBox);
 			slot.panel.add(slot.nameTextField);
+			
+			slot.panel.setLayout(new FlowLayout());
 			
 			c.add(slot.panel);		
 			 
@@ -134,6 +137,8 @@ public class PlayerRegistrationView extends View {
 		contentPane.removeAll();
 		
 		clearPlayerSlotsPanels(contentPane);
+		
+		contentPane.setLayout(new FlowLayout());
 		
 		generatePlayerCountComboBox(contentPane);
 		generatePlayerSlotsPanels(contentPane);

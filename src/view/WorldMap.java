@@ -10,13 +10,13 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
-import listeners.TerritoryListener;
+import listeners.ITerritoryListener;
 import model.WarGame;
 import shared.PlayerColor;
 import shared.Point;
 import shared.PolygonUtility;
 
-public class WorldMap implements TerritoryListener {
+public class WorldMap implements ITerritoryListener {
 
 	private int mapResX;
 	private int mapResY;

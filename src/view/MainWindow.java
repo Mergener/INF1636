@@ -20,7 +20,6 @@ public class MainWindow extends Window {
 		
 		setCurrentView(new PlayerRegistrationView(this, gameController));
 		
-		frame.getContentPane().setLayout(new FlowLayout());	
 		frame.revalidate();
 		frame.pack();
 	}

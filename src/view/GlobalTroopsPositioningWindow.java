@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import controller.GameController;
 import exceptions.InvalidContinentalSoldierExpenditure;
+import exceptions.InvalidGlobalSoldierExpenditure;
 import exceptions.PlayerNotFound;
 
 import java.awt.*;
@@ -15,7 +16,7 @@ import java.awt.event.WindowEvent;
 import model.WarGame;
 import shared.PlayerColor;
 
-public class ContinentalTroopsPositioningWindow extends Window {
+public class GlobalTroopsPositioningWindow extends Window {
 
 	private GameController controller;
 	private Window previousWindow;
@@ -24,14 +25,14 @@ public class ContinentalTroopsPositioningWindow extends Window {
 	private int getAvailableTroopsCount() {
 		PlayerColor p = controller.getCurrentPlayerColor();
 		try {
-			return controller.getWarGame().getPlayerUnspentContinentalSoldierCount(p, controller.getWarGame().getTerritoryContinentName(territoryName));
+			return controller.getWarGame().getPlayerUnspentGlobalSoldierCount(p);
 		} catch (PlayerNotFound e) {
 			// Ignore - player is fetched from the controller.
 			return 0;
 		}
 	}
 		
-	public ContinentalTroopsPositioningWindow(String territoryName, GameController controller, Window previousWindow) {
+	public GlobalTroopsPositioningWindow(String territoryName, GameController controller, Window previousWindow) {
 		this.territoryName = territoryName;
 		this.controller = controller;
 		this.previousWindow = previousWindow;
@@ -68,7 +69,7 @@ public class ContinentalTroopsPositioningWindow extends Window {
 		// showing a descriptive message for the player and not generating the rest of the window.
 		int available = getAvailableTroopsCount();
 		if (available == 0) {
-			JLabel label = new JLabel(String.format("Você não possui tropas continentais em %s (continente de %s).", 
+			JLabel label = new JLabel(String.format("Você não possui tropas globais restantes.", 
 					controller.getWarGame().getTerritoryContinentName(territoryName),
 					territoryName));
 			
@@ -112,10 +113,10 @@ public class ContinentalTroopsPositioningWindow extends Window {
 				int count = (Integer)troopsCountComboBox.getSelectedItem();
 				if (count != 0) {
 					try {
-						controller.spendContinentalSoldiers(territoryName, count);
+						controller.spendGlobalSoldiers(territoryName, count);
 						close();
-					} catch (InvalidContinentalSoldierExpenditure e) {
-						JOptionPane.showMessageDialog(getFrame(), String.format("Não foi possível fazer posicionamento das tropas continentais: %s", e.getMessage()));
+					} catch (InvalidGlobalSoldierExpenditure e) {
+						JOptionPane.showMessageDialog(getFrame(), String.format("Não foi possível fazer posicionamento das tropas globais: %s", e.getMessage()));
 					}	
 				} else {
 					close();

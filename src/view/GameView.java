@@ -2,7 +2,6 @@ package view;
 
 import model.WarGame;
 import shared.AttackSummary;
-import shared.GameState;
 import shared.PlayerColor;
 import shared.Point;
 import java.awt.*;
@@ -10,51 +9,67 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import controller.GameController;
+import controller.GameState;
+import exceptions.IllegalPlayEnd;
 import exceptions.InvalidAttack;
 import exceptions.NotEnoughPlayers;
-import listeners.CurrentPlayerChangeListener;
-import listeners.GameStateChangeListener;
+import exceptions.PlayerNotFound;
+import listeners.IAttackListener;
+import listeners.ICurrentPlayerChangeListener;
+import listeners.IGameStateChangeListener;
 
 import java.io.IOException;
 
-public class GameView extends View implements CurrentPlayerChangeListener {
+public class GameView extends View implements ICurrentPlayerChangeListener, IAttackListener {
 
 	private WarGame warGame;
 	private WorldMap worldMap;
 	private GameViewSidePanel sidePanel;
 	
 	private GameController gameController;
+	public GameController getGameController() {
+		return gameController;
+	}
 	
 	private enum MapClickBehaviour {
 		DisplayTerritoryInfo,
 		SelectAttackSource,
 		SelectAttackTarget,
-		PositionContinentalTroops
+		SelectMigrationSource,
+		SelectMigrationTarget,
+		PositionContinentalTroops,
+		PositionGlobalTroops
 	}
 	private MapClickBehaviour currentMapClickBehaviour = MapClickBehaviour.DisplayTerritoryInfo;
 	
 	private enum CancelButtonBehaviour {
 		CancelAttack,
+		CancelGlobalTroopsPositioning,
+		CancelContinentalTroopsPositioning,
+		CancelMigration,
 		None
 	}
 	private CancelButtonBehaviour currentCancelButtonBehaviour = CancelButtonBehaviour.None;
 	
+	private String selectedSourceMigrationTerritory;
 	private String selectedSourceAttackTerritory;
 		
 	@Override
 	protected void onEnter(View previousView) {
-		try {
-			sidePanel = new GameViewSidePanel();
-			gameController.addGameStateChangeListener(sidePanel);
-			
+		try {			
+			// Setup window layout
 			JFrame frame = getWindow().getFrame();
 			Container contentPane = frame.getContentPane();
 			
 			frame.setLayout(new FlowLayout());	
 			
-			gameController.startGame();		
+			// Generate world and map
+			gameController.startGame();	
 			
 			worldMap = new WorldMap(warGame);
+			
+			// Generate side panel
+			sidePanel = new GameViewSidePanel(gameController);
 			
 			worldMap.attachTo(contentPane);
 			worldMap.addMouseListener(new MouseAdapter() {
@@ -68,6 +83,10 @@ public class GameView extends View implements CurrentPlayerChangeListener {
 				}
 			});
 			
+			// Add hooks
+			gameController.addCurrentPlayerChangeListener(this);
+			gameController.addAttackListener(this);
+			
 			sidePanel.getObjectivesButton().addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent ev) {					
@@ -80,6 +99,11 @@ public class GameView extends View implements CurrentPlayerChangeListener {
 			sidePanel.getAttackButton().addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent ev) {
+					if (gameController.cardsTradeRequired()) {
+						JOptionPane.showMessageDialog(getWindow().getFrame(), "É necessário realizar uma troca de cartas antes de um novo ataque.");
+						return;
+					}
+					
 					sidePanel.setActionModeEnabled(true);
 					sidePanel.getContextLabel().setText("Atacando...");
 					currentMapClickBehaviour = MapClickBehaviour.SelectAttackSource;
@@ -99,26 +123,46 @@ public class GameView extends View implements CurrentPlayerChangeListener {
 			sidePanel.getPositionContinentalTroopsButton().addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent ev) {
-					onPositionTroopsButtonClicked();
+					onPositionContinentalTroopsButtonClicked();
+				}
+			});
+			
+			sidePanel.getPositionGlobalTroopsButton().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ev) {
+					onPositionGlobalTroopsButtonClicked();
 				}
 			});
 			
 			sidePanel.getFinishTurnButton().addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent ev) {
-					gameController.finishPlayerTurn();
+					try {
+						gameController.finishCurrentPlay();
+					} catch (IllegalPlayEnd e) {
+						JOptionPane.showMessageDialog(getWindow().getFrame(), e.getMessage());
+					}
 				}
 			});
 			
 			sidePanel.getTradeCardsButton().addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent ev) {
-					PlayerCardTradeWindow playerCardTradeWindow = new PlayerCardTradeWindow(gameController, getWindow());
+					TerritoryCardWindow territoryCardWindow = new TerritoryCardWindow(gameController, getWindow());
 					
-					playerCardTradeWindow.start();
+					territoryCardWindow.start();
 				}
 			});
-												
+			
+			sidePanel.getMoveTroopsButton().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ev) {
+					onMoveTroopsButtonClicked();
+				}
+			});
+										
+			sidePanel.onGameStateChanged(gameController.getGameState());
+			
 			contentPane.add(sidePanel);
 			
 			frame.revalidate();
@@ -194,34 +238,112 @@ public class GameView extends View implements CurrentPlayerChangeListener {
 		sidePanel.getContextLabel().setText("");
 	}
 	
-	private void onPositionContinentalTroopsTargetSelected(String territoryName) {
-		ContinentalTroopsPositioningWindow window = new ContinentalTroopsPositioningWindow(territoryName, gameController, getWindow());
-		window.start();
+	private void onGlobalTroopsPositioningFinished() {
+		currentMapClickBehaviour = MapClickBehaviour.DisplayTerritoryInfo;
+		sidePanel.setActionModeEnabled(false);
+	}
+	
+	private void onContinentalTroopsPositioningFinished() {
+		currentMapClickBehaviour = MapClickBehaviour.DisplayTerritoryInfo;
+		sidePanel.setActionModeEnabled(false);
 	}
 	
 	private void onCancelButtonClicked() {
 		sidePanel.setActionModeEnabled(false);
 		
 		switch (currentCancelButtonBehaviour) {
+		
 		case CancelAttack:
 			onAttackFinished();
 			break;
 			
+		case CancelGlobalTroopsPositioning:
+			onGlobalTroopsPositioningFinished();
+			break;
+			
+		case CancelContinentalTroopsPositioning:
+			onContinentalTroopsPositioningFinished();
+			break;
+			
+		case CancelMigration:
+			onMoveTroopsFinished();
+			break;
+			
 		default:
 			break;
+			
 		}
 	}
 	
-	private void onPositionTroopsButtonClicked() {
+	private void onMoveTroopsButtonClicked() {
 		sidePanel.setActionModeEnabled(true);
-		JOptionPane.showMessageDialog(getWindow().getFrame(), "Clique em um território para adicionar tropas nele.");
+		JOptionPane.showMessageDialog(getWindow().getFrame(), "Clique em um territórios para retirar tropas.");
+		currentMapClickBehaviour = MapClickBehaviour.SelectMigrationSource;
+	}
+	
+	private void onPositionContinentalTroopsButtonClicked() {
+		sidePanel.setActionModeEnabled(true);
+		JOptionPane.showMessageDialog(getWindow().getFrame(), "Clique em um território para posicionar tropas continentais nele.");
+		currentMapClickBehaviour = MapClickBehaviour.PositionContinentalTroops;
+	}
+	
+	private void onPositionGlobalTroopsButtonClicked() {
+		sidePanel.setActionModeEnabled(true);
+		JOptionPane.showMessageDialog(getWindow().getFrame(), "Clique em um território para posicionar tropas globais nele.");
+		currentMapClickBehaviour = MapClickBehaviour.PositionGlobalTroops;
+	}
+	
+	private void onMoveTroopsSourceSelected(String territoryName) {
+		if (warGame.getMaximumEligibleMigrationTroopsCount(territoryName) <= 0) {
+			JOptionPane.showMessageDialog(getWindow().getFrame(), "O número de tropas migráveis no território especificado é zero. Selecione outro.\n\nObservação: Tropas são migráveis se não fizeram parte de uma migração na rodada atual e não são as únicas presentes em seu território.");
+			return;
+		}
+		
+		if (warGame.getTerritoryOwnerColor(territoryName) != gameController.getCurrentPlayerColor()) {
+			JOptionPane.showMessageDialog(getWindow().getFrame(), "Você não possui o território selecionado. Selecione outro.");
+			return;
+		}
+		
+		currentMapClickBehaviour = MapClickBehaviour.SelectMigrationTarget;
+		this.selectedSourceMigrationTerritory = territoryName;
+		JOptionPane.showMessageDialog(getWindow().getFrame(), "Selecione agora o território para enviar as tropas.");
+	}
+	
+	private void onMoveTroopsTargetSelected(String territoryName) {
+		if (warGame.getTerritoryOwnerColor(territoryName) != gameController.getCurrentPlayerColor()) {
+			JOptionPane.showMessageDialog(getWindow().getFrame(), "Você não possui o território selecionado. Selecione outro.");
+			return;
+		}
+		
+		if (!warGame.isTerritoryNeighbourOf(selectedSourceMigrationTerritory, territoryName)) {
+			JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("O território selecionado não é conectado a %s. Selecione outro.", selectedSourceMigrationTerritory));
+			return;
+		}
+		
+		TroopMigrationWindow window = new TroopMigrationWindow(selectedSourceMigrationTerritory, territoryName, gameController, getWindow());
+		window.start();
+		onMoveTroopsFinished();
+	}
+	
+	private void onMoveTroopsFinished() {
+		currentMapClickBehaviour = MapClickBehaviour.DisplayTerritoryInfo;
+		sidePanel.setActionModeEnabled(false);
+	}
+	
+	private void onPositionGlobalTroopsTargetSelected(String territoryName) {
+		GlobalTroopsPositioningWindow window = new GlobalTroopsPositioningWindow(territoryName, gameController, getWindow());
+		window.start();
+		onGlobalTroopsPositioningFinished();
+	}
+	
+	private void onPositionContinentalTroopsTargetSelected(String territoryName) {
+		ContinentalTroopsPositioningWindow window = new ContinentalTroopsPositioningWindow(territoryName, gameController, getWindow());
+		window.start();
+		onContinentalTroopsPositioningFinished();
 	}
 	
 	protected void onMapTerritoryClicked(String territoryName) {
-		switch (currentMapClickBehaviour) {		
-		case DisplayTerritoryInfo:
-			displayTerritoryInfo(territoryName);
-			break;
+		switch (currentMapClickBehaviour) {	
 			
 		case SelectAttackSource:
 			onAttackSourceSelected(territoryName);
@@ -235,31 +357,102 @@ public class GameView extends View implements CurrentPlayerChangeListener {
 			onPositionContinentalTroopsTargetSelected(territoryName);
 			break;
 			
-		default:
-			break;			
+		case PositionGlobalTroops:
+			onPositionGlobalTroopsTargetSelected(territoryName);
+			break;
+
+		case SelectMigrationSource:
+			onMoveTroopsSourceSelected(territoryName);
+			break;
+			
+		case SelectMigrationTarget:
+			onMoveTroopsTargetSelected(territoryName);
+			break;	
+			
+		default:	
+		case DisplayTerritoryInfo:
+			displayTerritoryInfo(territoryName);
+			break;		
 		}
 	}
 
 	@Override
 	protected void onExit(View nextView) {
 	}
-	
+
 	public GameView(Window window, GameController gc) {
 		super(window);
 		this.gameController = gc;
 		this.warGame = gc.getWarGame();
 	}
 
-	private void updateCurrentPlayerLabel(PlayerColor newColor) {
-		try {
-			sidePanel.getCurrentPlayerLabel().setText(String.format("Vez de %s (%s)", warGame.getPlayerName(newColor), newColor.getName()));
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
 	
 	@Override
 	public void onCurrentPlayerChanged(PlayerColor newPlayerColor) {
-		updateCurrentPlayerLabel(newPlayerColor);
+		try {
+			JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("Vez de %s (%s).", newPlayerColor.toString(), warGame.getPlayerName(newPlayerColor)));
+		} catch (PlayerNotFound e) {
+			// Ignore
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onAttackPerformed(AttackSummary args) {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("Ataque realizado\n");
+		sb.append(String.format("Origem do ataque: %s\n", args.sourceTerritoryName));
+		sb.append(String.format("Alvo do ataque: %s\n", args.targetTerritoryName));
+		
+		sb.append("Dados da defesa: ");
+		for (int i = 0; i < args.defenseDices.length; ++i) {
+			sb.append(args.defenseDices[i]);
+			
+			if (i < args.defenseDices.length - 1) {
+				sb.append(", ");
+			} else {
+				sb.append("\n");
+			}
+		}
+		
+		sb.append("Dados do ataque: ");
+		for (int i = 0; i < args.attackDices.length; ++i) {
+			sb.append(args.attackDices[i]);
+			
+			if (i < args.attackDices.length - 1) {
+				sb.append(", ");
+			} else {
+				sb.append("\n");
+			}
+		}
+		
+		sb.append(String.format("\nPerdas da defesa: %d soldados", args.getDefenseLoss()));
+		sb.append(String.format("\nPerdas do ataque: %d soldados", args.getAttackLoss()));
+		
+		if (args.territoryWasTaken()) {
+			PlayerColor attacker = gameController.getWarGame().getTerritoryOwnerColor(args.sourceTerritoryName);
+			
+			try {
+				sb.append(String.format("\n\nApós o árduo combate, %s foi conquistado pelas tropas de %s (%s)", 
+						args.targetTerritoryName, 
+						gameController.getWarGame().getPlayerName(attacker),
+						attacker.toString()
+						));
+			} catch (PlayerNotFound e) {
+				// Ignore
+				e.printStackTrace();
+			}
+		} else {		
+			sb.append(String.format("\n\nAs tropas de %s resistiram ao ataque!", 
+					args.targetTerritoryName
+					));		
+		}
+		
+		JOptionPane.showMessageDialog(getWindow().getFrame(), sb.toString());
+		
+		if (gameController.cardsTradeRequired()) {
+			JOptionPane.showMessageDialog(getWindow().getFrame(), "Você obteve 5 cartas de territórios: é necessário realizar uma troca de cartas antes de finalizar a jogada ou realizar outro ataque.");
+		}
 	}
 }

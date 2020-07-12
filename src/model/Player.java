@@ -3,6 +3,7 @@ package model;
 import java.util.List;
 
 import exceptions.InvalidContinentalSoldierExpenditure;
+import exceptions.InvalidGlobalSoldierExpenditure;
 import shared.PlayerColor;
 
 import java.util.Collections;
@@ -38,14 +39,22 @@ class Player {
 		territoryCards.add(card);
 	}
 	
-	private int territoryCount;
 	public int getTerritoryCount() {
-		return territoryCount;
+		return ownedTerritories.size();
 	}
-	
-	private int soldierCount;	
+		
 	public int getSoldierCount() {
-		return soldierCount;
+		int ret = unspentGlobalSoldierCount;
+		
+		for (Integer i : unspentContinentalSoldiers.values()) {
+			ret += i;
+		}
+		
+		for (Territory t : ownedTerritories) {
+			ret += t.getSoldierCount();
+		}
+		
+		return ret;
 	}
 	
 	private Hashtable<Continent, Integer> unspentContinentalSoldiers = new Hashtable<Continent, Integer>();
@@ -81,6 +90,28 @@ class Player {
 		}
 	}
 	
+	private int unspentGlobalSoldierCount = 0;
+	
+	public int getUnspentGlobalSoldierCount() {
+		return unspentGlobalSoldierCount;
+	}
+	
+	public void spendGlobalSoldiers(Territory t, int amount) throws InvalidGlobalSoldierExpenditure {
+		if (!ownsTerritory(t)) {
+			throw new InvalidGlobalSoldierExpenditure("Não é possível posicionar territórios globais em territórios não possuídos pelo jogador.");
+		}
+		if (unspentGlobalSoldierCount < amount) {
+			throw new InvalidGlobalSoldierExpenditure("O jogador não possui soldados globais suficientes para posicionar no território.");
+		}
+		
+		unspentGlobalSoldierCount -= amount;		
+		t.addSoldiers(amount);
+	}
+	
+	public void addGlobalSoldiers(int amount) {
+		unspentGlobalSoldierCount += amount;
+	}
+	
 	/**
 	 * Returns this player's number of unspent continental soldiers.
 	 * 
@@ -107,7 +138,7 @@ class Player {
 		unspentContinentalSoldiers.putIfAbsent(c, 0);
 		
 		Integer i = unspentContinentalSoldiers.get(c);
-		i += amount;
+		unspentContinentalSoldiers.put(c, i + amount);
 	}
 	
 	/**
@@ -130,12 +161,8 @@ class Player {
 			throw new InvalidContinentalSoldierExpenditure("Tentou posicionar tropas continentais bônus demais.");
 		}
 		
-		continentalSoldierCount -= amount;
+		unspentContinentalSoldiers.put(t.getContinent(), continentalSoldierCount - amount);
 		t.addSoldiers(amount);
-	}
-		
-	public void addSoldiers(int v) {
-		soldierCount += v;
 	}
 	
 	/**
@@ -145,15 +172,24 @@ class Player {
 	 */
 	public boolean hasEntireContinent(Continent c) {
 		for (Territory t : c.getTerritories()) {
-			if(t.getOwner() != this) {
+			if (t.getOwner() != this) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	public Player(String name, PlayerColor color) {
+	public Player(World world, String name, PlayerColor color) {
 		this.name = name;
 		this.color = color;
+		
+		Continent[] continents = world.getContinents();
+		
+		for (int i = 0; i < continents.length; ++i) {
+			unspentContinentalSoldiers.put(continents[i], 0);
+		}
+	}
+	public void removeTerritoryCard(TerritoryCard card) {
+		territoryCards.remove(card);
 	}
 }

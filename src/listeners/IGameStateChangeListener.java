@@ -1,7 +1,7 @@
 package listeners;
 
-import shared.GameState;
+import controller.GameState;
 
-public interface GameStateChangeListener {
+public interface IGameStateChangeListener {
 	public void onGameStateChanged(GameState newState);
 }

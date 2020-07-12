@@ -19,8 +19,7 @@ public class MainMenuView extends View {
 	}
 
 	@Override
-	protected void onExit(View nextView) {
-		
+	protected void onExit(View nextView) {		
 	}
 
 	public MainMenuView(Window window) {

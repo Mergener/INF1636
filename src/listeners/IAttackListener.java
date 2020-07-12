@@ -2,6 +2,6 @@ package listeners;
 
 import shared.AttackSummary;
 
-public interface AttackListener {
+public interface IAttackListener {
 	public void onAttackPerformed(AttackSummary args);
 }
