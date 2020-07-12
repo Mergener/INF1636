@@ -1,8 +1,9 @@
 package shared;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public enum Geometry {
+public enum Geometry implements Serializable {
 	Triangle,
 	Square,
 	Circle,

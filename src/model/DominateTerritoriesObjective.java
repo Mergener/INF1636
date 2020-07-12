@@ -2,6 +2,8 @@ package model;
 
 class DominateTerritoriesObjective implements IObjective {
 		
+	private static final long serialVersionUID = -4045729534881191040L;
+	
 	private Territory[] targets;
 	
 	@Override

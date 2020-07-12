@@ -9,9 +9,13 @@ import shared.PlayerColor;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-class Player {
+class Player implements Serializable {
+	
+	private static final long serialVersionUID = -7195413765397743295L;
+	
 	private String name;
 	public String getName() {
 		return name;

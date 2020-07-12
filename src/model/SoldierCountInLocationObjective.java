@@ -2,6 +2,8 @@ package model;
 
 public class SoldierCountInLocationObjective implements IObjective {
 
+	private static final long serialVersionUID = 3360580213391709855L;
+	
 	private int soldierCount;
 	private Territory[] territories;
 	

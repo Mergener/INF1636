@@ -5,6 +5,7 @@ import exceptions.IllegalCardsTrade;
 import exceptions.IllegalMigration;
 import exceptions.InvalidAttack;
 import listeners.IAttackListener;
+import listeners.ITerritoryListener;
 import shared.AttackSummary;
 import shared.Dice;
 import shared.Geometry;
@@ -13,14 +14,17 @@ import shared.PlayerColor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Hashtable;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Random;
 
-class Match {
+class Match implements Serializable {
 	
+	private static final long serialVersionUID = 6693775283474164375L;
+
 	/* @brief Array that contains all players in the match. 
 	 * 
 	 * @remarks The order of players within this array matches the order
@@ -356,46 +360,13 @@ class Match {
 		}
 	}
 	
-	private void giveRandomTerritoriesToPlayersTest() {
-		List<Player> players = getPlayers();
-		
-		for (Continent c : world.getContinents()) {
-			for (Territory t : c.getTerritories()) {
-				Player p = players.get(0);
-			
-				if(t.getName().equals("Calgary")) {
-					p = players.get(1);
-					p.addTerritory(t);
-					t.addSoldiers(1);
-				}
-				else if(t.getName().equals("Angola")){
-					p = players.get(2);
-					p.addTerritory(t);
-					t.addSoldiers(1);
-				}
-				else if(t.getName().equals("Nigeria")) {
-					p = players.get(2);
-					p.addTerritory(t);
-					t.addSoldiers(1);
-				}
-				else if(t.getName().equals("Argelia")) {
-					p = players.get(2);
-					p.addTerritory(t);
-					t.addSoldiers(1);
-				}
-				else {
-					p = players.get(0);
-					p.addTerritory(t);
-					t.addSoldiers(1);
-				}
-			}
-		}
-	}
-	
-	
-	private ArrayList<IAttackListener> iAttackListeners = new ArrayList<IAttackListener>();
+	private transient ArrayList<IAttackListener> iAttackListeners = new ArrayList<IAttackListener>();
 	
 	public void addAttackListener(IAttackListener l) {
+		if (iAttackListeners == null) {
+			iAttackListeners = new ArrayList<IAttackListener>();
+		}
+		
 		iAttackListeners.add(l);
 	}
 	
@@ -475,8 +446,10 @@ class Match {
 		AttackSummary summary = new AttackSummary(source.getName(), target.getName(), defenseDices, attackDices, defenseLoss, attackLoss, territoryTaken,isTargetEliminated,opponentColor);
 		
 		// Notifies all listeners.
-		for (i = 0; i < iAttackListeners.size(); ++i) {
-			iAttackListeners.get(i).onAttackPerformed(summary);
+		if (iAttackListeners != null) {
+			for (i = 0; i < iAttackListeners.size(); ++i) {
+				iAttackListeners.get(i).onAttackPerformed(summary);
+			}
 		}
 		
 		return summary;
@@ -603,23 +576,9 @@ class Match {
 	
 	public void start() {		
 		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(world));
-		giveRandomTerritoriesToPlayersTest();
+		giveRandomTerritoriesToPlayers();
 		distributeGlobalSoldiersToPlayers();
 				
 		started = true;
-				
-		for (int i = 0; i < matchStartListeners.size(); ++i) {
-			matchStartListeners.get(i).onMatchStart(this);
-		}
 	}	
-	
-	private static ArrayList<MatchStartListener> matchStartListeners = new ArrayList<MatchStartListener>();
-	
-	public static void addMatchStartListener(MatchStartListener listener) {
-		matchStartListeners.add(listener);
-	}
-	
-	public static void removeMatchStartListener(MatchStartListener listener) {
-		matchStartListeners.remove(listener);
-	}
 }

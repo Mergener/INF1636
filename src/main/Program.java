@@ -6,9 +6,7 @@ import view.MainWindow;
 public class Program {
 
 	public static void main(String[] args) {
-		GameController controller = new GameController();
-		
-		MainWindow mainWindow = new MainWindow(controller);
+		MainWindow mainWindow = new MainWindow();
 		mainWindow.start();
 	}
 	

@@ -2,9 +2,12 @@ package model;
 
 import java.util.Collection;
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Hashtable;
 
-class Continent {
+class Continent implements Serializable {
+	
+	private static final long serialVersionUID = 9154620184130697744L;
 	
 	private String name;
 	private Color color;

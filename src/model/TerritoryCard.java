@@ -1,8 +1,12 @@
 package model;
 
+import java.io.Serializable;
+
 import shared.Geometry;
 
-class TerritoryCard {
+class TerritoryCard implements Serializable {
+	private static final long serialVersionUID = -5655137306692047284L;
+	
 	private int id;
 	private String description;
 	private Geometry geometry;

@@ -1,7 +1,11 @@
 package shared;
 
-public class Point {
+import java.io.Serializable;
 
+public class Point implements Serializable {
+
+	private static final long serialVersionUID = 7857885385922265185L;
+	
 	public final float x;
 	public final float y;
 	

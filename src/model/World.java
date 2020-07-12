@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 import shared.Point;
 
@@ -10,8 +11,10 @@ import shared.Point;
  * 
  * Since this class is stateful, it should not be recycled throughout matches.
  */
-class World {
+class World implements Serializable {
 
+	private static final long serialVersionUID = -1108366210688196375L;
+	
 	private String mapForegroundPath;
 	public String getMapForegroundPath() {
 		return mapForegroundPath;

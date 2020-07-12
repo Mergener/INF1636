@@ -1,9 +1,10 @@
 package shared;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.HashMap;
 
-public enum PlayerColor {
+public enum PlayerColor implements Serializable {
 	Red,
 	Green,
 	Blue,

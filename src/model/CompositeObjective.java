@@ -2,6 +2,7 @@ package model;
 
 public class CompositeObjective implements IObjective {
 
+	private static final long serialVersionUID = -7365761880160300661L;
 	private IObjective[] objectives;
 	
 	public CompositeObjective(IObjective[] objectives) {

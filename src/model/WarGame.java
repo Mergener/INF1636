@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 import exceptions.*;
 import listeners.IAttackListener;
@@ -13,8 +14,10 @@ import shared.Point;
 /**
  * Contains full featured functionality for running a War game match.
  */
-public class WarGame {
+public class WarGame implements Serializable {
 	
+	private static final long serialVersionUID = -3705633269183503524L;
+
 	private ArrayList<Player> players = new ArrayList<Player>();
 
 	private World world;
@@ -430,6 +433,14 @@ public class WarGame {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Returns true if the specified card is a joker.
+	 * @param id The ID of the desired card.
+	 */
+	public boolean isTerritoryCardJoker(int id) {
+		return match.getCardById(id).getGeometry() == Geometry.Joker;
 	}
 		
 	/**

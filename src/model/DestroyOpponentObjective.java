@@ -2,6 +2,7 @@ package model;
 
 public class DestroyOpponentObjective implements IObjective{
 
+	private static final long serialVersionUID = 7890879586240812523L;
 	private Player opponent;
 	
 	public DestroyOpponentObjective(Player opponent) {

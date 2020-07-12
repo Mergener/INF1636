@@ -2,6 +2,8 @@ package model;
 
 public class ConquerEntireContinentsObjective implements IObjective {
 
+	private static final long serialVersionUID = -1712075768539090545L;
+	
 	private Continent[] continents;
 	
 	public ConquerEntireContinentsObjective(Continent[] continents) {

@@ -8,23 +8,19 @@ import java.awt.*;
 
 public class MainWindow extends Window {
 	
-	private GameController gameController;
 	
 	@Override
 	public void onStart() {		
 		JFrame frame = getFrame();
 		
-		frame.setTitle("War");
-		frame.setPreferredSize(new Dimension(1280, 720));
-		frame.setLocationRelativeTo(null);			
+		frame.setTitle("War");			
 		
-		setCurrentView(new PlayerRegistrationView(this, gameController));
+		setCurrentView(new MainMenuView(this));
 		
 		frame.revalidate();
 		frame.pack();
 	}
 	
-	public MainWindow(GameController gc) {
-		this.gameController = gc;
+	public MainWindow() {
 	}
 }

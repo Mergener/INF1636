@@ -7,6 +7,7 @@ import shared.Point;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.GameController;
 import controller.GameState;
@@ -18,6 +19,10 @@ import listeners.IAttackListener;
 import listeners.ICurrentPlayerChangeListener;
 import listeners.IGameStateChangeListener;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Target;
 
@@ -65,7 +70,9 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 			frame.setLayout(new FlowLayout());	
 			
 			// Generate world and map
-			gameController.startGame();	
+			if (!gameController.getWarGame().hasStarted()) {
+				gameController.startGame();	
+			}
 			
 			worldMap = new WorldMap(warGame);
 			
@@ -161,22 +168,89 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 					onMoveTroopsButtonClicked();
 				}
 			});
-										
-			sidePanel.onGameStateChanged(gameController.getGameState());
+			
+			sidePanel.getSaveGameButton().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ev) {
+					saveButtonClicked();
+				}
+			});			
 			
 			contentPane.add(sidePanel);
 			
 			frame.revalidate();
 			frame.repaint();
 			
-			frame.pack();			
+			frame.pack();	
+			frame.setLocationRelativeTo(null);
+			
+			sidePanel.onGameStateChanged(gameController.getGameState());
+			sidePanel.onCurrentPlayerChanged(gameController.getCurrentPlayerColor());
+			onCurrentPlayerChanged(gameController.getCurrentPlayerColor());		
 			
 		} catch (IOException ex) {
-			System.err.println("Erro carregando o background.");
+			System.err.println("Erro ao tentar carregar background.");
 			ex.printStackTrace();
 			
 		} catch (NotEnoughPlayers e) {
+			// Ignore
 			e.printStackTrace();
+		}
+	}
+	
+	private void saveButtonClicked() {
+		JFileChooser fc = new JFileChooser();
+
+        fc.setAcceptAllFileFilterUsed(false);
+		fc.setFileFilter(new FileNameExtensionFilter("Arquivos de save de war (*.warsave)", "warsave"));
+		
+		int retVal = fc.showSaveDialog(getWindow().getFrame());
+		
+		File file = fc.getSelectedFile();
+		
+		if (!file.getName().endsWith(".warsave")) {
+			file.renameTo(new File(file.getPath() + ".warsave"));
+		}
+		
+		if (retVal == JFileChooser.APPROVE_OPTION) {
+            if (file.exists()) {
+            	int confirm = JOptionPane.showConfirmDialog(getWindow().getFrame(), "O arquivo especificado já existe. Deseja sobrescrevê-lo?");
+            	
+            	if (confirm != JOptionPane.YES_OPTION) {
+            		// User does not want to overwrite file, exit save menu.
+            		return;
+            	}
+            } else {
+            	try {
+					file.createNewFile();
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("Não foi possível criar o arquivo requisitado:\n%s", e.getMessage()));
+				}
+            }
+        }
+		
+		finishSave(file);
+	}
+	
+	private void finishSave(File file) {		
+		try {
+			FileOutputStream stream = new FileOutputStream(file);
+			
+			try {
+				gameController.saveToStream(stream);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("Erro ao tentar salvar jogo:\n%s", e.getMessage()));
+				e.printStackTrace();
+			} finally {
+				stream.close();
+			}
+			
+		} catch (FileNotFoundException e) {
+			// Ignore
+			e.printStackTrace();
+		} catch (IOException ex) {
+			JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("Erro:\n%s", ex.getMessage()));
+			ex.printStackTrace();
 		}
 	}
 	

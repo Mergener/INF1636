@@ -1,11 +1,14 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import listeners.ITerritoryListener;
 import shared.Point;
 
-class Territory {
+class Territory implements Serializable {
+	
+	private static final long serialVersionUID = -4924926236018475090L;
 	
 	private String name;
 	private Player owner = null;
@@ -15,11 +18,19 @@ class Territory {
 	
 	private ArrayList<Territory> neighbours = new ArrayList<Territory>();
 	
-	private ArrayList<ITerritoryListener> listeners = new ArrayList<ITerritoryListener>();
+	private transient ArrayList<ITerritoryListener> listeners;
 	public void addListener(ITerritoryListener l) {
+		if (listeners == null) {
+			listeners = new ArrayList<ITerritoryListener>();
+		}
+		
 		listeners.add(l);
 	}
 	public void removeTerritoryListener(ITerritoryListener l) {
+		if (listeners == null) {
+			listeners = new ArrayList<ITerritoryListener>();
+		}
+		
 		listeners.remove(l);
 	}
 	
@@ -58,8 +69,10 @@ class Territory {
 				newOwner.addTerritory(this);
 			}			
 			
-			for (int i = 0; i < listeners.size(); ++i) {
-				listeners.get(i).onTerritoryOwnershipChange(name, newOwner.getColor());
+			if (listeners != null) {
+				for (int i = 0; i < listeners.size(); ++i) {
+					listeners.get(i).onTerritoryOwnershipChange(name, newOwner.getColor());
+				}
 			}
 		}
 	}
@@ -71,8 +84,10 @@ class Territory {
 	private void setSoldierCount(int count) {
 		soldierCount = Math.max(0, count);
 		
-		for (int i = 0; i < listeners.size(); ++i) {
-			listeners.get(i).onTerritorySoldierCountChange(getName(), soldierCount);
+		if (listeners != null) {
+			for (int i = 0; i < listeners.size(); ++i) {
+				listeners.get(i).onTerritorySoldierCountChange(getName(), soldierCount);
+			}
 		}
 	}
 	
@@ -102,7 +117,7 @@ class Territory {
 		return false;
 	}
 	
-	public Territory(String name, Point center, Point[] vertices) {
+	public Territory(String name, Point center, Point[] vertices) {		
 		this.name = name;
 		this.vertices = vertices;
 		this.center = center;

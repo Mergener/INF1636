@@ -1,5 +1,11 @@
 package controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,12 +25,13 @@ import listeners.IGameStateChangeListener;
 import model.WarGame;
 import shared.AttackSummary;
 import shared.PlayerColor;
-import view.GameView;
 
 /**
  * Keeps track of the current state of a war game, including each players' turn, and manipulates it. 
  */
-public class GameController {
+public class GameController implements Serializable {
+
+	private static final long serialVersionUID = -248882901782572751L;
 
 	private ArrayList<PlayerColor> players = new ArrayList<PlayerColor>();
 	
@@ -39,9 +46,11 @@ public class GameController {
 		}
 		
 		this.currentPlayerIndex = index;
-		for (int i = 0; i < iCurrentPlayerChangeListeners.size(); ++i) {
-			iCurrentPlayerChangeListeners.get(i).onCurrentPlayerChanged(getCurrentPlayerColor());
-		}		
+		if (iCurrentPlayerChangeListeners != null) {
+			for (int i = 0; i < iCurrentPlayerChangeListeners.size(); ++i) {
+				iCurrentPlayerChangeListeners.get(i).onCurrentPlayerChanged(getCurrentPlayerColor());
+			}		
+		}
 	}
 	
 	private GameState gameState;
@@ -52,26 +61,41 @@ public class GameController {
 	private void setGameState(GameState newState) {
 		this.gameState = newState;
 		
-		for (int i = 0; i < iGameStateChangeListeners.size(); ++i) {
-			iGameStateChangeListeners.get(i).onGameStateChanged(newState);
+		if (iGameStateChangeListeners != null) {
+			for (int i = 0; i < iGameStateChangeListeners.size(); ++i) {
+				iGameStateChangeListeners.get(i).onGameStateChanged(newState);
+			}
 		}
 	}
 	
-	private ArrayList<IGameStateChangeListener> iGameStateChangeListeners = new ArrayList<IGameStateChangeListener>();
+	private transient ArrayList<IGameStateChangeListener> iGameStateChangeListeners = new ArrayList<IGameStateChangeListener>();
 	public void addGameStateChangeListener(IGameStateChangeListener l) {
+		if (iGameStateChangeListeners == null) {
+			iGameStateChangeListeners = new ArrayList<IGameStateChangeListener>();
+		}
+		
 		iGameStateChangeListeners.add(l);
 	}
 	
 	public void removeGameStateChangeListener(IGameStateChangeListener l) {
+		if (iGameStateChangeListeners == null) {
+			iGameStateChangeListeners = new ArrayList<IGameStateChangeListener>();
+		}
 		iGameStateChangeListeners.remove(l);
 	}
 	
-	private ArrayList<ICurrentPlayerChangeListener> iCurrentPlayerChangeListeners = new ArrayList<ICurrentPlayerChangeListener>(); 
+	private transient ArrayList<ICurrentPlayerChangeListener> iCurrentPlayerChangeListeners = new ArrayList<ICurrentPlayerChangeListener>(); 
 	public void addCurrentPlayerChangeListener(ICurrentPlayerChangeListener l) {
+		if (iCurrentPlayerChangeListeners == null) {
+			iCurrentPlayerChangeListeners = new ArrayList<ICurrentPlayerChangeListener>();
+		}
 		iCurrentPlayerChangeListeners.add(l);
 	}
 	
 	public void removeCurrentPlayerChangeListener(ICurrentPlayerChangeListener l) {
+		if (iCurrentPlayerChangeListeners == null) {
+			iCurrentPlayerChangeListeners = new ArrayList<ICurrentPlayerChangeListener>();
+		}
 		iCurrentPlayerChangeListeners.remove(l);
 	}
 
@@ -79,7 +103,6 @@ public class GameController {
 	public WarGame getWarGame() {
 		return game;
 	}
-
 	
 	public void registerPlayer(String name, PlayerColor color) throws BadPlayerColorUsage, GameAlreadyStarted {
 		game.registerPlayer(name, color);
@@ -292,7 +315,32 @@ public class GameController {
 			e.printStackTrace();
 		}
 	}
+	
+	public void saveToStream(OutputStream stream) throws IOException {
+		ObjectOutputStream objStream = new ObjectOutputStream(stream);
 		
+		try {
+			objStream.writeObject(this);
+		} catch (IOException ex) {
+			throw ex;
+		} finally {
+			objStream.close();
+		}		
+	}
+	
+	public static GameController loadGameFromStream(InputStream stream) throws IOException, ClassNotFoundException {
+		ObjectInputStream objStream = new ObjectInputStream(stream);
+		
+		try {
+			GameController controller = (GameController)objStream.readObject();
+			return controller;
+		} catch(Exception ex) {
+			throw ex;
+		} finally {
+			objStream.close();
+		}
+	}
+	
 	public GameController() {
 		this.game = new WarGame();
 		this.gameState = GameState.Nothing;		

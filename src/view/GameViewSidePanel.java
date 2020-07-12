@@ -71,6 +71,11 @@ public class GameViewSidePanel extends JPanel implements IGameStateChangeListene
 		return moveTroopsButton;
 	}
 	
+	private JButton saveGameButton;
+	public JButton getSaveGameButton() {
+		return saveGameButton;
+	}
+	
 	private ArrayList<JButton> disabledButtonsOnActionMode = new ArrayList<JButton>();
 
 	/**
@@ -156,6 +161,9 @@ public class GameViewSidePanel extends JPanel implements IGameStateChangeListene
 		
 		cancelButton = new JButton("Cancelar");
 		add(cancelButton);
+		
+		saveGameButton = new JButton("Salvar jogo");
+		add(saveGameButton);
 		
 		contextLabel.setText("");
 		setActionModeEnabled(false);

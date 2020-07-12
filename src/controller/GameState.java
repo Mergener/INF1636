@@ -1,6 +1,8 @@
 package controller;
 
-public enum GameState {
+import java.io.Serializable;
+
+public enum GameState implements Serializable {
 	
 	/**
 	 * Armies are currently being distributed throughout each player's territories.
