@@ -152,6 +152,7 @@ public class TerritoryCardWindow extends Window {
 		tradeCardsButton.setEnabled(false);
 		
 		for(int i = 0; i < playerCardIds.length; ++i) {
+			System.out.printf("%d\n", playerCardIds[i]);
 			CardPanel cardPanel = new CardPanel(contentPane, playerCardIds[i],generateImagePath(controller.getWarGame().getTerritoryCardTerritory(playerCardIds[i])));
 			cardPanels.add(cardPanel);
 		}

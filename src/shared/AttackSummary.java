@@ -8,6 +8,9 @@ public class AttackSummary {
 	public final int[] defenseDices;
 	public final int[] attackDices;
 	
+	public boolean isPreviousOwnerEliminated;
+	public PlayerColor previousOwnerColor;
+	
 	public int getAttackCount() {
 		return attackDices.length;
 	}
@@ -51,6 +54,14 @@ public class AttackSummary {
 		return territoryTaken;
 	}
 	
+	public boolean isPreviousOwnerEliminated(){
+		return isPreviousOwnerEliminated;
+	}
+	
+	public PlayerColor getPreviousOwnerColor() {
+		return previousOwnerColor;
+	}
+	
 	/**
 	 * @param sourceTerritory The territory performing the attack. The state in which this territory should be passed as a parameter is
 	 * the state it held prior to the attack.
@@ -59,7 +70,7 @@ public class AttackSummary {
 	 * @param defenseDices The defense dices. Expected to be sorted from smallest to largest value.
 	 * @param attackDices The attack dices. Expected to be sorted from smallest to largest value.
 	 */
-	public AttackSummary(String sourceTerritoryName, String targetTerritoryName, int[] defenseDices, int[] attackDices, int defenseLoss, int attackLoss, boolean territoryWasTaken) {
+	public AttackSummary(String sourceTerritoryName, String targetTerritoryName, int[] defenseDices, int[] attackDices, int defenseLoss, int attackLoss, boolean territoryWasTaken,boolean isPreviousOwnerEliminated, PlayerColor previousOwnerColor) {
 		this.sourceTerritoryName = sourceTerritoryName;
 		this.targetTerritoryName = targetTerritoryName;
 		this.defenseDices = defenseDices;
@@ -67,6 +78,8 @@ public class AttackSummary {
 		this.attackLoss = attackLoss;
 		this.defenseLoss = defenseLoss;
 		this.territoryTaken = territoryWasTaken;
+		this.isPreviousOwnerEliminated = isPreviousOwnerEliminated;
+		this.previousOwnerColor = previousOwnerColor;
 	}
 
 }

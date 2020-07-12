@@ -183,6 +183,38 @@ public class WarGame {
 	
 	
 	/**
+	 * 
+	 * @param The name of the territory.
+	 * @return If this is the owner's last territory. 
+	 */
+	public int hasZeroTerritories(String targetTerritoryName) throws PlayerNotFound {
+		Player opponent = this.getPlayerByColor(getTerritoryOwnerColor(targetTerritoryName));
+		
+		if(opponent.getTerritoryCount() == 0) {
+			return opponent.getTerritoryCount();
+		}
+		return opponent.getTerritoryCount();
+		
+	}
+	
+	
+	/**
+	 * Eliminates the opponent player, granting all of his territory cards to the other.
+	 * @param The colors from both players.  
+	 * @throws PlayerNotFound 
+	 */
+	public void eliminateOpponent(PlayerColor pColor, PlayerColor opponentColor) throws PlayerNotFound {
+		List<TerritoryCard> opponentTerritoryCards = getPlayerByColor(opponentColor).getTerritoryCardList();
+		
+		for(int i = 0; i < opponentTerritoryCards.size(); ++i) {
+			getPlayerByColor(pColor).addTerritoryCard(opponentTerritoryCards.get(i));
+			getPlayerByColor(opponentColor).removeTerritoryCard(opponentTerritoryCards.get(i));
+		}
+	}
+	
+	
+	
+	/**
 	 * Returns the coordinates of the center of the specified territory.
 	 * 
 	 * Note that the returned each coordinate will be a value within the 0-1 range, being 0

@@ -42,6 +42,10 @@ class Player {
 	public int getTerritoryCount() {
 		return ownedTerritories.size();
 	}
+	
+	public void removeTerritory(Territory t) {
+		ownedTerritories.remove(t);
+	}
 		
 	public int getSoldierCount() {
 		int ret = unspentGlobalSoldierCount;

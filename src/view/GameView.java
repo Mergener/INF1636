@@ -19,6 +19,7 @@ import listeners.ICurrentPlayerChangeListener;
 import listeners.IGameStateChangeListener;
 
 import java.io.IOException;
+import java.lang.annotation.Target;
 
 public class GameView extends View implements ICurrentPlayerChangeListener, IAttackListener {
 
@@ -430,9 +431,8 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 		sb.append(String.format("\nPerdas da defesa: %d soldados", args.getDefenseLoss()));
 		sb.append(String.format("\nPerdas do ataque: %d soldados", args.getAttackLoss()));
 		
+		PlayerColor attacker = gameController.getWarGame().getTerritoryOwnerColor(args.sourceTerritoryName);
 		if (args.territoryWasTaken()) {
-			PlayerColor attacker = gameController.getWarGame().getTerritoryOwnerColor(args.sourceTerritoryName);
-			
 			try {
 				sb.append(String.format("\n\nApós o árduo combate, %s foi conquistado pelas tropas de %s (%s)", 
 						args.targetTerritoryName, 
@@ -453,6 +453,18 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 		
 		if (gameController.cardsTradeRequired()) {
 			JOptionPane.showMessageDialog(getWindow().getFrame(), "Você obteve 5 cartas de territórios: é necessário realizar uma troca de cartas antes de finalizar a jogada ou realizar outro ataque.");
+		}
+		
+		if(args.isPreviousOwnerEliminated()) {
+			try {
+				gameController.getWarGame().eliminateOpponent(attacker,args.getPreviousOwnerColor());
+				sb.setLength(0);
+				sb.append(String.format("O jogador %s foi eliminado pelo jogador %s", args.getPreviousOwnerColor(),attacker));
+				JOptionPane.showMessageDialog(getWindow().getFrame(),sb.toString());
+			} catch (PlayerNotFound e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
