@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import model.WarGame;
 import shared.PlayerColor;
 
 public class ContinentalTroopsPositioningWindow extends Window {

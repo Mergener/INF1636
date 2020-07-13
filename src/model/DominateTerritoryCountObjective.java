@@ -2,6 +2,7 @@ package model;
 
 public class DominateTerritoryCountObjective implements IObjective {
 	
+	private static final long serialVersionUID = -5141126519137604464L;
 	private int territoryCount;
 
 	public DominateTerritoryCountObjective(int count) {
@@ -11,11 +12,6 @@ public class DominateTerritoryCountObjective implements IObjective {
 	@Override
 	public String getDescription() {
 		return String.format("Domine %d territórios ao total.", territoryCount);
-	}
-
-	@Override
-	public boolean isSuitableForPlayer(Player p) {
-		return true;
 	}
 
 	@Override

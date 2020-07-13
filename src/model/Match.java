@@ -305,8 +305,6 @@ class Match implements Serializable {
 			Player p = players.get(i);
 			int amt = p.getTerritoryCount() / 2;
 			
-			System.out.println(String.format("%s (%s) - %d", p.getName(), p.getColor().toString(), p.getTerritoryCount()));
-			
 			p.addGlobalSoldiers(amt);
 		}
 	}
@@ -390,16 +388,16 @@ class Match implements Serializable {
 	 */
 	private ArrayList<Player> playersThatClaimedTerritories = new ArrayList<Player>();
 	
-	private void checkForVictorsAndInachiavableObjectives() {
+	public void checkForVictorsAndInachievableObjectives() {
 		for (Player p : players) {
 			IObjective o = p.getObjective();
 			
+			if (!o.isAchievable(p)) {
+				p.setObjective(o.getFallbackObjective(p));
+			}
+			
 			if (o.isComplete(p, getWorld())) {
-				if (victoryListeners != null) {
-					if (!o.isAchievable(p)) {
-						p.setObjective(o.getFallbackObjective(p));
-					}
-					
+				if (victoryListeners != null) {					
 					for (int i = 0; i < victoryListeners.size(); ++i) {
 						victoryListeners.get(i).onVictory(p.getColor());
 					}
@@ -494,7 +492,7 @@ class Match implements Serializable {
 			}
 		}
 				
-		checkForVictorsAndInachiavableObjectives();
+		checkForVictorsAndInachievableObjectives();
 		
 		return summary;
 	}
@@ -589,7 +587,7 @@ class Match implements Serializable {
 			migratedCounts.put(target, migratedCount + amount);
 			target.addSoldiers(amount);
 			source.removeSoldiers(amount);
-			checkForVictorsAndInachiavableObjectives();
+			checkForVictorsAndInachievableObjectives();
 		}
 	}
 	
@@ -625,7 +623,8 @@ class Match implements Serializable {
 		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(this));
 		giveRandomTerritoriesToPlayers();
 		distributeGlobalSoldiersToPlayers();
-		distributeContinentalSoldiersToPlayers();		
+		distributeContinentalSoldiersToPlayers();
+		checkForVictorsAndInachievableObjectives();
 		
 		started = true;
 	}	

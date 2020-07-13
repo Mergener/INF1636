@@ -309,6 +309,8 @@ public class WarGame implements Serializable {
 		Player p = getPlayerByColor(player);
 		Territory t = world.findTerritory(territoryName);
 		
+		match.checkForVictorsAndInachievableObjectives();
+		
 		p.spendGlobalSoldiers(t, amount);
 	}
 	
@@ -340,6 +342,7 @@ public class WarGame implements Serializable {
 	 */
 	public void spendPlayerContinentalSoldiers(PlayerColor player, String territoryName, int amount) throws InvalidContinentalSoldierExpenditure, PlayerNotFound {
 		getPlayerByColor(player).spendContinentalSoldiers(world.findTerritory(territoryName), amount);
+		match.checkForVictorsAndInachievableObjectives();
 	}
 	
 	/**

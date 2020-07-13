@@ -1,7 +1,6 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.GameController;
@@ -12,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.text.NumberFormat;
 
 public class MainMenuView extends View {
 

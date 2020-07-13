@@ -4,18 +4,11 @@ import javax.swing.*;
 
 import controller.GameController;
 import exceptions.IllegalMigration;
-import exceptions.InvalidContinentalSoldierExpenditure;
-import exceptions.InvalidGlobalSoldierExpenditure;
-import exceptions.PlayerNotFound;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import model.WarGame;
-import shared.PlayerColor;
 
 public class TroopMigrationWindow extends Window {
 

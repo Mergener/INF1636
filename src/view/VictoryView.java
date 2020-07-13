@@ -31,16 +31,19 @@ public class VictoryView extends View {
 		contentPane.setLayout(new GridLayout(4, 1));
 
 		try {		
-			JLabel endGameText = new JLabel("<html><b>FIM DO JOGO</b></html>");
+			JLabel endGameText = new JLabel("<html><div align=\"center\"><strong>FIM DO JOGO</strong></div></html>");
 			contentPane.add(endGameText);
 		
 			JLabel winnerText = new JLabel(String.format("Parabéns, %s (%s)!", game.getPlayerName(winnerColor), winnerColor.toString()));
 			contentPane.add(winnerText);
 
-			JLabel objectiveText = new JLabel(String.format("Seu objetivo era:\n%s", game.getPlayerObjectiveDescription(winnerColor)));
+			String s = String.format("<html>Seu objetivo era:\n%s</html>", game.getPlayerObjectiveDescription(winnerColor));
+			s = s.replace("\n", "<br>");
+			JLabel objectiveText = new JLabel(s);
+			
 			contentPane.add(objectiveText);
 			
-			JButton returnButton = new JButton("Retornar ao meno principal");
+			JButton returnButton = new JButton("Retornar ao menu principal");
 			returnButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {

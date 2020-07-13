@@ -10,22 +10,18 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.GameController;
-import controller.GameState;
 import exceptions.IllegalPlayEnd;
 import exceptions.InvalidAttack;
 import exceptions.NotEnoughPlayers;
 import exceptions.PlayerNotFound;
 import listeners.IAttackListener;
 import listeners.ICurrentPlayerChangeListener;
-import listeners.IGameStateChangeListener;
 import listeners.IVictoryListener;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.annotation.Target;
 
 public class GameView extends View implements ICurrentPlayerChangeListener, IAttackListener, IVictoryListener {
 
@@ -191,7 +187,6 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 			onCurrentPlayerChanged(gameController.getCurrentPlayerColor());		
 			
 		} catch (IOException ex) {
-			System.err.println("Erro ao tentar carregar background.");
 			ex.printStackTrace();
 			
 		} catch (NotEnoughPlayers e) {

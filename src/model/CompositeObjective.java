@@ -33,16 +33,6 @@ public class CompositeObjective implements IObjective {
 	}
 	
 	@Override
-	public boolean isSuitableForPlayer(Player p) {
-		for(int i = 0; i < objectives.length; ++i) {
-			if (objectives[i].isSuitableForPlayer(p) == false) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
 	public boolean isAchievable(Player p) {
 		for(int i = 0; i < objectives.length; ++i) {
 			if (objectives[i].isAchievable(p) == false) {

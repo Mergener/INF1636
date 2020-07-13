@@ -252,7 +252,6 @@ class World implements Serializable {
 				return t;
 			}
 		}
-		System.out.printf("Função findTerritory retornou null para %s\n", name);
 		return null;
 	}
 

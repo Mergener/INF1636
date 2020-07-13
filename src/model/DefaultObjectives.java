@@ -160,6 +160,8 @@ public class DefaultObjectives {
 				world.findContinent("Africa")
 		}));	
 		
+		objectives.add(new DestroyOpponentObjective(getRandomPlayerFromMatch(match)));
+		
 		return objectives;
 	}
 	

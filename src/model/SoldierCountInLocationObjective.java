@@ -37,12 +37,6 @@ public class SoldierCountInLocationObjective implements IObjective {
 		}
 		
 		return sum >= soldierCount;
-		
-	}
-	
-	@Override
-	public boolean isSuitableForPlayer(Player p) {
-		return true;
 	}
 
 	@Override

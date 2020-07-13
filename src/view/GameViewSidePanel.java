@@ -1,8 +1,6 @@
 package view;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -12,7 +10,6 @@ import controller.GameState;
 import exceptions.PlayerNotFound;
 import listeners.ICurrentPlayerChangeListener;
 import listeners.IGameStateChangeListener;
-import model.WarGame;
 import shared.PlayerColor;
 
 public class GameViewSidePanel extends JPanel implements IGameStateChangeListener, ICurrentPlayerChangeListener {

@@ -6,7 +6,6 @@ import javax.swing.*;
 import controller.GameController;
 import exceptions.BadPlayerColorUsage;
 import exceptions.GameAlreadyStarted;
-import model.WarGame;
 import shared.PlayerColor;
 
 import java.awt.*;
@@ -105,9 +104,6 @@ public class PlayerRegistrationView extends View {
 						String playerName = slot.nameTextField.getText();
 						
 						PlayerColor playerColor = PlayerColor.getColorByName((String)slot.colorComboBox.getSelectedItem());
-						System.out.printf("%s %s\n", playerColor.toString(), slot.colorComboBox.getSelectedItem());
-						
-						System.out.printf("Jogador %d: %s (cor %s)\n", i + 1, playerName, playerColor.toString());
 						
 						gameController.registerPlayer(playerName, playerColor);						
 					}

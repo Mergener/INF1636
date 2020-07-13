@@ -10,11 +10,6 @@ interface IObjective extends Serializable {
 	public String getDescription();
 	
 	/**
-	 * Can this objective be given to the specified player?
-	 */
-	public boolean isSuitableForPlayer(Player p);
-	
-	/**
 	 * Has this objective been completed for the specified player in the
 	 * specified world?
 	 */

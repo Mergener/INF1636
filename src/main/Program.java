@@ -1,6 +1,5 @@
 package main;
 
-import controller.GameController;
 import view.MainWindow;
 
 public class Program {
