@@ -18,7 +18,7 @@ public class DestroyOpponentObjective implements IObjective{
 	public boolean isComplete(Player p, World world) {
 		assert(p != opponent):
 			"DestroyOpponentObjective: Alvo não pode ser o mesmo que o dono do objetivo.";
-		return opponent.getSoldierCount() <= 0;
+		return opponent.getTerritoryCount() <= 0;
 	}
 	
 	@Override

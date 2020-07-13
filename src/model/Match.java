@@ -575,7 +575,7 @@ class Match implements Serializable {
 	}
 	
 	public void start() {		
-		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(world));
+		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(this));
 		giveRandomTerritoriesToPlayers();
 		distributeGlobalSoldiersToPlayers();
 				

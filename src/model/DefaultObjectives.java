@@ -2,13 +2,24 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DefaultObjectives {
 
+	private static Player getRandomPlayerFromMatch(Match m) {
+		List<Player> players = m.getPlayers();
+		
+		Random random = new Random();
+		
+		return players.get(random.nextInt(players.size()));
+	}
+	
 	/*
 	 * Generates and returns a list of pre-defined objectives associated with a given world.
 	 */
-	public static List<IObjective> getAllDefaultObjectives(World world) {
+	public static List<IObjective> getAllDefaultObjectives(Match match) {
+		World world = match.getWorld();
+		
 		ArrayList<IObjective> objectives = new ArrayList<IObjective>();
 		
 		objectives.add(new DominateTerritoriesObjective(new Territory[] {
