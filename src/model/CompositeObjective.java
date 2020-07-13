@@ -25,7 +25,7 @@ public class CompositeObjective implements IObjective {
 	@Override
 	public boolean isComplete(Player p, World world) {
 		for(int i = 0; i < objectives.length; ++i) {
-			if(objectives[i].isComplete(p, world) != true) {
+			if (objectives[i].isComplete(p, world) != true) {
 				return false;
 			}
 		}
@@ -35,11 +35,31 @@ public class CompositeObjective implements IObjective {
 	@Override
 	public boolean isSuitableForPlayer(Player p) {
 		for(int i = 0; i < objectives.length; ++i) {
-			if(objectives[i].isSuitableForPlayer(p) == false) {
+			if (objectives[i].isSuitableForPlayer(p) == false) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public boolean isAchievable(Player p) {
+		for(int i = 0; i < objectives.length; ++i) {
+			if (objectives[i].isAchievable(p) == false) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public IObjective getFallbackObjective(Player p) {
+		for (int i = 0; i < objectives.length; ++i) {
+			if (objectives[i].isAchievable(p) == false) {
+				return objectives[i].getFallbackObjective(p);
+			}
+		}
+		return null;
 	}
 
 }

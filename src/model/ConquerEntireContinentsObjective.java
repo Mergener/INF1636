@@ -37,4 +37,14 @@ public class ConquerEntireContinentsObjective implements IObjective {
 		return true;
 	}
 
+	@Override
+	public boolean isAchievable(Player p) {
+		return true;
+	}
+
+	@Override
+	public IObjective getFallbackObjective(Player p) {
+		return null;
+	}
+
 }

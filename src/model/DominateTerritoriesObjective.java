@@ -47,4 +47,14 @@ class DominateTerritoriesObjective implements IObjective {
 	public boolean isSuitableForPlayer(Player p) {
 		return true;
 	}
+
+	@Override
+	public boolean isAchievable(Player p) {
+		return true;
+	}
+
+	@Override
+	public IObjective getFallbackObjective(Player p) {
+		return null;
+	}
 }

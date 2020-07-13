@@ -17,7 +17,7 @@ public class SoldierCountInLocationObjective implements IObjective {
 		
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(String.format("Obter pelo menos %d tropas nos seguintes territórios: ",soldierCount));
+		sb.append(String.format("Obter pelo menos %d tropas espalhadas pelos seguintes territórios: ",soldierCount));
 		for (Territory t : territories) {
 			sb.append("\n\t" + t.getName());
 		}
@@ -43,6 +43,16 @@ public class SoldierCountInLocationObjective implements IObjective {
 	@Override
 	public boolean isSuitableForPlayer(Player p) {
 		return true;
+	}
+
+	@Override
+	public boolean isAchievable(Player p) {
+		return true;
+	}
+
+	@Override
+	public IObjective getFallbackObjective(Player p) {
+		return null;
 	}
 
 }

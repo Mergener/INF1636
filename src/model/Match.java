@@ -5,7 +5,7 @@ import exceptions.IllegalCardsTrade;
 import exceptions.IllegalMigration;
 import exceptions.InvalidAttack;
 import listeners.IAttackListener;
-import listeners.ITerritoryListener;
+import listeners.IVictoryListener;
 import shared.AttackSummary;
 import shared.Dice;
 import shared.Geometry;
@@ -370,12 +370,41 @@ class Match implements Serializable {
 		iAttackListeners.add(l);
 	}
 	
+	private transient ArrayList<IVictoryListener> victoryListeners = new ArrayList<IVictoryListener>();
+	
+	public void addVictoryListener(IVictoryListener l) {
+		if (victoryListeners == null) {
+			victoryListeners = new ArrayList<IVictoryListener>();
+		}
+		
+		victoryListeners.add(l);
+	}
+	
 	/**
 	 * Players can only be awarded with new territory cards at their first territory conquest in every round.
 	 * This list keeps track of the players that have already gained territory cards in the current round.
 	 * It must be cleared every new round.
 	 */
 	private ArrayList<Player> playersThatClaimedTerritories = new ArrayList<Player>();
+	
+	private void checkForVictorsAndInachiavableObjectives() {
+		for (Player p : players) {
+			IObjective o = p.getObjective();
+			
+			if (o.isComplete(p, getWorld())) {
+				if (victoryListeners != null) {
+					if (!o.isAchievable(p)) {
+						p.setObjective(o.getFallbackObjective(p));
+					}
+					
+					for (int i = 0; i < victoryListeners.size(); ++i) {
+						victoryListeners.get(i).onVictory(p.getColor());
+					}
+				}
+				return;
+			}
+		}
+	}
 	
 	public AttackSummary performAttack(Player player, Territory source, Territory target) throws InvalidAttack {
 		if (!player.ownsTerritory(source)) {
@@ -432,6 +461,16 @@ class Match implements Serializable {
 			player.addTerritory(target);
 			
 			isTargetEliminated = (opponent.getTerritoryCount() == 0);
+			if (isTargetEliminated) {
+				// Transfer cards to eliminator
+				List<TerritoryCard> opponentCards = opponent.getTerritoryCardList();
+				
+				for (TerritoryCard c : opponentCards) {
+					player.addTerritoryCard(c);
+					opponent.removeTerritoryCard(c);
+				}
+			}
+			
 			opponentColor = opponent.getColor();
 			
 			// Player has taken the territory, grant them a new territory card if they haven't claimed one in the
@@ -445,12 +484,14 @@ class Match implements Serializable {
 		// Generates the attack summary object.
 		AttackSummary summary = new AttackSummary(source.getName(), target.getName(), defenseDices, attackDices, defenseLoss, attackLoss, territoryTaken,isTargetEliminated,opponentColor);
 		
-		// Notifies all listeners.
+		// Notifies all attack listeners.
 		if (iAttackListeners != null) {
 			for (i = 0; i < iAttackListeners.size(); ++i) {
 				iAttackListeners.get(i).onAttackPerformed(summary);
 			}
 		}
+				
+		checkForVictorsAndInachiavableObjectives();
 		
 		return summary;
 	}
@@ -545,10 +586,11 @@ class Match implements Serializable {
 			migratedCounts.put(target, migratedCount + amount);
 			target.addSoldiers(amount);
 			source.removeSoldiers(amount);
+			checkForVictorsAndInachiavableObjectives();
 		}
 	}
 	
-	public void terminateRound() {
+	private void distributeContinentalSoldiersToPlayers() {
 		Continent[] continents = world.getContinents();
 		
 		for (int i = 0; i < players.size(); ++i) {
@@ -558,11 +600,13 @@ class Match implements Serializable {
 				
 				if (p.hasEntireContinent(c)) {
 					p.addContinentalSoldiers(c, c.getValue());
-					System.out.printf("%d continental soldiers added for %s at %s.\n", c.getValue(), p.getColor().toString(), c.getName());
 				}
 			}
 		}
-		
+	}
+	
+	public void terminateRound() {
+		distributeContinentalSoldiersToPlayers();		
 		distributeGlobalSoldiersToPlayers();
 		
 		playersThatClaimedTerritories.clear();
@@ -578,7 +622,8 @@ class Match implements Serializable {
 		giveRandomObjectivesToPlayers(DefaultObjectives.getAllDefaultObjectives(this));
 		giveRandomTerritoriesToPlayers();
 		distributeGlobalSoldiersToPlayers();
-				
+		distributeContinentalSoldiersToPlayers();		
+		
 		started = true;
 	}	
 }

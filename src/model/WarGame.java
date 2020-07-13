@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import exceptions.*;
 import listeners.IAttackListener;
 import listeners.ITerritoryListener;
+import listeners.IVictoryListener;
 import shared.AttackSummary;
 import shared.Geometry;
 import shared.PlayerColor;
@@ -199,24 +200,7 @@ public class WarGame implements Serializable {
 		return opponent.getTerritoryCount();
 		
 	}
-	
-	
-	/**
-	 * Eliminates the opponent player, granting all of his territory cards to the other.
-	 * @param The colors from both players.  
-	 * @throws PlayerNotFound 
-	 */
-	public void eliminateOpponent(PlayerColor pColor, PlayerColor opponentColor) throws PlayerNotFound {
-		List<TerritoryCard> opponentTerritoryCards = getPlayerByColor(opponentColor).getTerritoryCardList();
 		
-		for(int i = 0; i < opponentTerritoryCards.size(); ++i) {
-			getPlayerByColor(pColor).addTerritoryCard(opponentTerritoryCards.get(i));
-			getPlayerByColor(opponentColor).removeTerritoryCard(opponentTerritoryCards.get(i));
-		}
-	}
-	
-	
-	
 	/**
 	 * Returns the coordinates of the center of the specified territory.
 	 * 
@@ -457,6 +441,15 @@ public class WarGame implements Serializable {
 		}
 		
 		return continentsNames;
+	}
+	
+	/**
+	 * Adds a victory listener to be notified when a player has won the game.
+	 * 
+	 * @param l The listener to be added.
+	 */
+	public void addVictoryListener(IVictoryListener l) {
+		match.addVictoryListener(l);
 	}
 	
 	/**

@@ -18,6 +18,7 @@ import exceptions.PlayerNotFound;
 import listeners.IAttackListener;
 import listeners.ICurrentPlayerChangeListener;
 import listeners.IGameStateChangeListener;
+import listeners.IVictoryListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Target;
 
-public class GameView extends View implements ICurrentPlayerChangeListener, IAttackListener {
+public class GameView extends View implements ICurrentPlayerChangeListener, IAttackListener, IVictoryListener {
 
 	private WarGame warGame;
 	private WorldMap worldMap;
@@ -94,6 +95,7 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 			// Add hooks
 			gameController.addCurrentPlayerChangeListener(this);
 			gameController.addAttackListener(this);
+			gameController.getWarGame().addVictoryListener(this);
 			
 			sidePanel.getObjectivesButton().addActionListener(new ActionListener() {
 				@Override
@@ -530,16 +532,15 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 			JOptionPane.showMessageDialog(getWindow().getFrame(), "Você obteve 5 cartas de territórios: é necessário realizar uma troca de cartas antes de finalizar a jogada ou realizar outro ataque.");
 		}
 		
-		if(args.isPreviousOwnerEliminated()) {
-			try {
-				gameController.getWarGame().eliminateOpponent(attacker,args.getPreviousOwnerColor());
-				sb.setLength(0);
-				sb.append(String.format("O jogador %s foi eliminado pelo jogador %s", args.getPreviousOwnerColor(),attacker));
-				JOptionPane.showMessageDialog(getWindow().getFrame(),sb.toString());
-			} catch (PlayerNotFound e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (args.isPreviousOwnerEliminated()) {
+			sb.setLength(0);
+			sb.append(String.format("O jogador %s foi eliminado pelo jogador %s", args.getPreviousOwnerColor(),attacker));
+			JOptionPane.showMessageDialog(getWindow().getFrame(),sb.toString());
 		}
+	}
+
+	@Override
+	public void onVictory(PlayerColor winnerColor) {
+		this.setCurrentView(new VictoryView(getWindow(), warGame, winnerColor));
 	}
 }

@@ -34,6 +34,14 @@ class Player implements Serializable {
 		objective = o;
 	}
 	
+	private Player nemesis = null;
+	public Player getNemesis() {
+		return nemesis;
+	}
+	public void setNemesis(Player n) {		
+		this.nemesis = n;
+	}
+	
 	private ArrayList<TerritoryCard> territoryCards = new ArrayList<TerritoryCard>();
 	public List<TerritoryCard> getTerritoryCardList() {
 		return Collections.unmodifiableList(territoryCards);
