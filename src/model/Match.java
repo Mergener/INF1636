@@ -85,6 +85,19 @@ class Match implements Serializable {
 		return allCards.get(id);
 	}
 	
+	private void randomizeUnclaimedCardsList() {
+		Random random = new Random();
+		
+		ArrayList<TerritoryCard> arr = new ArrayList<TerritoryCard>(allCards);
+		
+		while (!arr.isEmpty()) {
+			int idx = random.nextInt(arr.size());
+			
+			unclaimedTerritoryCards.add(arr.get(idx));
+			arr.remove(idx);
+		}
+	}
+	
 	private void generateTerritoryCards() {
 		
 		for (int i = 0; i < JOKER_CARDS_COUNT; ++i) {
@@ -94,209 +107,159 @@ class Match implements Serializable {
 		}
 		
 		TerritoryCard southAfricaCard = new TerritoryCard(allCards.size(), "Africa do Sul", Geometry.Triangle,world.findTerritory("Africa do Sul"));
-		unclaimedTerritoryCards.addLast(southAfricaCard);
 		allCards.add(southAfricaCard);
 		
 		TerritoryCard angolaCard = new TerritoryCard(allCards.size(), "Angola", Geometry.Square, world.findTerritory("Angola"));
-		unclaimedTerritoryCards.add(angolaCard);
 		allCards.add(angolaCard);
 		
 		TerritoryCard argeliaCard = new TerritoryCard(allCards.size(), "Argelia", Geometry.Circle, world.findTerritory("Argelia"));
-		unclaimedTerritoryCards.addLast(argeliaCard);
 		allCards.add(argeliaCard);
 		
 		TerritoryCard egyptCard = new TerritoryCard(allCards.size(), "Egito", Geometry.Triangle, world.findTerritory("Egito"));
-		unclaimedTerritoryCards.addLast(egyptCard);
 		allCards.add(egyptCard);
 		
 		TerritoryCard nigeriaCard = new TerritoryCard(allCards.size(), "Nigeria", Geometry.Circle, world.findTerritory("Nigeria"));
-		unclaimedTerritoryCards.addLast(nigeriaCard);
 		allCards.add(nigeriaCard);
 		
 		TerritoryCard somaliaCard = new TerritoryCard(allCards.size(), "Somalia", Geometry.Square, world.findTerritory("Somalia"));
-		unclaimedTerritoryCards.addLast(somaliaCard);
 		allCards.add(somaliaCard);
 		
 		TerritoryCard alascaCard = new TerritoryCard(allCards.size(), "Alasca", Geometry.Triangle, world.findTerritory("Alasca"));
-		unclaimedTerritoryCards.addLast(alascaCard);
 		allCards.add(alascaCard);
 		
 		TerritoryCard calgaryCard = new TerritoryCard(allCards.size(), "Calgary", Geometry.Circle, world.findTerritory("Calgary"));
-		unclaimedTerritoryCards.addLast(calgaryCard);
 		allCards.add(calgaryCard);
 		
 		TerritoryCard californiaCard = new TerritoryCard(allCards.size(), "California", Geometry.Square, world.findTerritory("California"));
-		unclaimedTerritoryCards.addLast(californiaCard);
 		allCards.add(californiaCard);
 		
 		TerritoryCard greenlandcard = new TerritoryCard(allCards.size(), "Groenlandia", Geometry.Circle, world.findTerritory("Groenlandia"));
-		unclaimedTerritoryCards.addLast(greenlandcard);
 		allCards.add(greenlandcard);
 		
 		TerritoryCard mexicoCard = new TerritoryCard(allCards.size(), "Mexico", Geometry.Square, world.findTerritory("Mexico"));
-		unclaimedTerritoryCards.addLast(mexicoCard);
 		allCards.add(mexicoCard);
 		
 		TerritoryCard newYorkCard = new TerritoryCard(allCards.size(), "Nova Iorque", Geometry.Square, world.findTerritory("Nova Iorque"));
-		unclaimedTerritoryCards.addLast(newYorkCard);
 		allCards.add(newYorkCard);
 		
 		TerritoryCard quebecCard = new TerritoryCard(allCards.size(), "Quebec", Geometry.Circle, world.findTerritory("Quebec"));
-		unclaimedTerritoryCards.addLast(quebecCard);
 		allCards.add(quebecCard);
 		
 		TerritoryCard texasCard = new TerritoryCard(allCards.size(), "Texas", Geometry.Triangle, world.findTerritory("Texas"));
-		unclaimedTerritoryCards.addLast(texasCard);
 		allCards.add(texasCard);
 		
 		TerritoryCard vancouverCard = new TerritoryCard(allCards.size(), "Vancouver", Geometry.Triangle, world.findTerritory("Vancouver"));
-		unclaimedTerritoryCards.addLast(vancouverCard);
 		allCards.add(vancouverCard);
 		
 		TerritoryCard saudiArabiaCard = new TerritoryCard(allCards.size(), "Arabia Saudita", Geometry.Circle, world.findTerritory("Arabia Saudita"));
-		unclaimedTerritoryCards.addLast(saudiArabiaCard);
 		allCards.add(saudiArabiaCard);
 		
 		TerritoryCard bangladeshCard = new TerritoryCard(allCards.size(), "Bangladesh", Geometry.Circle, world.findTerritory("Bangladesh"));
-		unclaimedTerritoryCards.addLast(bangladeshCard);
 		allCards.add(bangladeshCard);
 		
 		TerritoryCard khazakstanCard = new TerritoryCard(allCards.size(), "Cazaquistao", Geometry.Circle, world.findTerritory("Cazaquistao"));
-		unclaimedTerritoryCards.addLast(khazakstanCard);
 		allCards.add(khazakstanCard);
 		
 		TerritoryCard chinaCard = new TerritoryCard(allCards.size(), "China", Geometry.Square, world.findTerritory("China"));
-		unclaimedTerritoryCards.addLast(chinaCard);
 		allCards.add(chinaCard);
 		
 		TerritoryCard northKoreaCard = new TerritoryCard(allCards.size(), "Coreia do Norte", Geometry.Square, world.findTerritory("Coreia do Norte"));
-		unclaimedTerritoryCards.addLast(northKoreaCard);
 		allCards.add(northKoreaCard);
 		
 		TerritoryCard southKoreacard = new TerritoryCard(allCards.size(), "Coreia do Sul", Geometry.Triangle, world.findTerritory("Coreia do Sul"));
-		unclaimedTerritoryCards.addLast(southKoreacard);
 		allCards.add(southKoreacard);
 		
 		TerritoryCard estoniaCard = new TerritoryCard(allCards.size(), "Estonia", Geometry.Circle, world.findTerritory("Estonia"));
-		unclaimedTerritoryCards.addLast(estoniaCard);
 		allCards.add(estoniaCard);
 		
 		TerritoryCard indiaCard = new TerritoryCard(allCards.size(), "India", Geometry.Triangle, world.findTerritory("India"));
-		unclaimedTerritoryCards.addLast(indiaCard);
 		allCards.add(indiaCard);
 		
 		TerritoryCard iranCard = new TerritoryCard(allCards.size(), "Ira", Geometry.Square, world.findTerritory("Ira"));
-		unclaimedTerritoryCards.addLast(iranCard);
 		allCards.add(iranCard);
 		
 		TerritoryCard iraqCard = new TerritoryCard(allCards.size(), "Iraque", Geometry.Triangle, world.findTerritory("Iraque"));
-		unclaimedTerritoryCards.addLast(iraqCard);
 		allCards.add(iraqCard);
 		
 		TerritoryCard japanCard = new TerritoryCard(allCards.size(), "Japao", Geometry.Circle, world.findTerritory("Japao"));
-		unclaimedTerritoryCards.addLast(japanCard);
 		allCards.add(japanCard);
 		
 		TerritoryCard jordaniaCard = new TerritoryCard(allCards.size(), "Jordania", Geometry.Square, world.findTerritory("Jordania"));
-		unclaimedTerritoryCards.addLast(jordaniaCard);
 		allCards.add(jordaniaCard);
 		
 		TerritoryCard latviaCard = new TerritoryCard(allCards.size(), "Letonia", Geometry.Square, world.findTerritory("Letonia"));
-		unclaimedTerritoryCards.addLast(latviaCard);
 		allCards.add(latviaCard);
 		
 		TerritoryCard mongoliaCard = new TerritoryCard(allCards.size(), "Mongolia", Geometry.Triangle, world.findTerritory("Mongolia"));
-		unclaimedTerritoryCards.addLast(mongoliaCard);
 		allCards.add(mongoliaCard);
 		
 		TerritoryCard pakistanCard = new TerritoryCard(allCards.size(), "Paquistao", Geometry.Circle, world.findTerritory("Paquistao"));
-		unclaimedTerritoryCards.addLast(pakistanCard);
 		allCards.add(pakistanCard);
 		
 		TerritoryCard russiaCard = new TerritoryCard(allCards.size(), "Russia", Geometry.Triangle, world.findTerritory("Russia"));
-		unclaimedTerritoryCards.addLast(russiaCard);
 		allCards.add(russiaCard);
 		
 		TerritoryCard siberiaCard = new TerritoryCard(allCards.size(), "Siberia", Geometry.Square, world.findTerritory("Siberia"));
-		unclaimedTerritoryCards.addLast(siberiaCard);
 		allCards.add(siberiaCard);
 		
 		TerritoryCard siriaCard = new TerritoryCard(allCards.size(), "Siria", Geometry.Square, world.findTerritory("Siria"));
-		unclaimedTerritoryCards.addLast(siriaCard);
 		allCards.add(siriaCard);
 		
 		TerritoryCard thailandCard = new TerritoryCard(allCards.size(), "Tailandia", Geometry.Triangle, world.findTerritory("Tailandia"));
-		unclaimedTerritoryCards.addLast(thailandCard);
 		allCards.add(thailandCard);
 		
 		TerritoryCard turkeyCard = new TerritoryCard(allCards.size(), "Turquia", Geometry.Triangle, world.findTerritory("Turquia"));
-		unclaimedTerritoryCards.addLast(turkeyCard);
 		allCards.add(turkeyCard);
 		
 		TerritoryCard argentinaCard = new TerritoryCard(allCards.size(), "Argentina", Geometry.Square, world.findTerritory("Argentina"));
-		unclaimedTerritoryCards.addLast(argentinaCard);
 		allCards.add(argentinaCard);
 		
 		TerritoryCard brasilCard = new TerritoryCard(allCards.size(), "Brasil", Geometry.Circle, world.findTerritory("Brasil"));
-		unclaimedTerritoryCards.addLast(brasilCard);
 		allCards.add(brasilCard);
 		
 		TerritoryCard peruCard = new TerritoryCard(allCards.size(), "Peru", Geometry.Triangle, world.findTerritory("Peru"));
-		unclaimedTerritoryCards.addLast(peruCard);
 		allCards.add(peruCard);
 		
 		TerritoryCard venezuelaCard = new TerritoryCard(allCards.size(), "Venezuela", Geometry.Triangle, world.findTerritory("Venezuela"));
-		unclaimedTerritoryCards.addLast(venezuelaCard);
 		allCards.add(venezuelaCard);
 		
 		TerritoryCard spainCard = new TerritoryCard(allCards.size(), "Espanha", Geometry.Circle, world.findTerritory("Espanha"));
-		unclaimedTerritoryCards.addLast(spainCard);
 		allCards.add(spainCard);
 		
 		TerritoryCard franceCard = new TerritoryCard(allCards.size(), "Franca", Geometry.Triangle, world.findTerritory("Franca"));
-		unclaimedTerritoryCards.addLast(franceCard);
 		allCards.add(franceCard);
 		
 		TerritoryCard italyCard = new TerritoryCard(allCards.size(), "Italia", Geometry.Square, world.findTerritory("Italia"));
-		unclaimedTerritoryCards.addLast(italyCard);
 		allCards.add(italyCard);
 		
 		TerritoryCard polandCard = new TerritoryCard(allCards.size(), "Polonia", Geometry.Triangle, world.findTerritory("Polonia"));
-		unclaimedTerritoryCards.addLast(polandCard);
 		allCards.add(polandCard);
 		
 		TerritoryCard unitedKingdomCard = new TerritoryCard(allCards.size(), "Reino Unido", Geometry.Circle, world.findTerritory("Reino Unido"));
-		unclaimedTerritoryCards.addLast(unitedKingdomCard);
 		allCards.add(unitedKingdomCard);
 		
 		TerritoryCard romaniacard = new TerritoryCard(allCards.size(), "Romenia", Geometry.Triangle, world.findTerritory("Romenia"));
-		unclaimedTerritoryCards.addLast(romaniacard);
 		allCards.add(romaniacard);
 		
 		TerritoryCard swedenCard = new TerritoryCard(allCards.size(), "Suecia", Geometry.Square, world.findTerritory("Suecia"));
-		unclaimedTerritoryCards.addLast(swedenCard);
 		allCards.add(swedenCard);
 		
 		TerritoryCard ukraineCard = new TerritoryCard(allCards.size(), "Ucrania", Geometry.Circle, world.findTerritory("Ucrania"));
-		unclaimedTerritoryCards.addLast(ukraineCard);
 		allCards.add(ukraineCard);
 		
 		TerritoryCard australiaCard = new TerritoryCard(allCards.size(), "Australia", Geometry.Triangle, world.findTerritory("Australia"));
-		unclaimedTerritoryCards.addLast(australiaCard);
 		allCards.add(australiaCard);
 		
 		TerritoryCard indonesiaCard = new TerritoryCard(allCards.size(), "Indonesia", Geometry.Triangle, world.findTerritory("Indonesia"));
-		unclaimedTerritoryCards.addLast(indonesiaCard);
 		allCards.add(indonesiaCard);
 		
 		TerritoryCard newZelandCard = new TerritoryCard(allCards.size(), "Nova Zelandia", Geometry.Square, world.findTerritory("Nova Zelandia"));
-		unclaimedTerritoryCards.addLast(newZelandCard);
 		allCards.add(newZelandCard);
 		
-		TerritoryCard perthCard = new TerritoryCard(allCards.size(), "Perth", Geometry.Circle, world.findTerritory("Perth"));								
-		unclaimedTerritoryCards.addLast(perthCard);
+		TerritoryCard perthCard = new TerritoryCard(allCards.size(), "Perth", Geometry.Circle, world.findTerritory("Perth"));				
 		allCards.add(perthCard);
 		
+		randomizeUnclaimedCardsList();
 		
 	}
 	
