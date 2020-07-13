@@ -412,6 +412,9 @@ public class WarGame implements Serializable {
 	}
 	
 	public String getTerritoryCardTerritory(int id) {
+		if(id == 0 || id == 1) {
+			return "Coringa";
+		}
 		return match.getCardById(id).getTerritory().getName();
 	}
 	

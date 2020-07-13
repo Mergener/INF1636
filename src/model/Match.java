@@ -86,6 +86,13 @@ class Match implements Serializable {
 	}
 	
 	private void generateTerritoryCards() {
+		
+		for (int i = 0; i < JOKER_CARDS_COUNT; ++i) {
+			TerritoryCard card = new TerritoryCard(allCards.size(), "Carta coringa.", Geometry.Joker, null);
+			unclaimedTerritoryCards.addLast(card);
+			allCards.add(card);
+		}
+		
 		TerritoryCard southAfricaCard = new TerritoryCard(allCards.size(), "Africa do Sul", Geometry.Triangle,world.findTerritory("Africa do Sul"));
 		unclaimedTerritoryCards.addLast(southAfricaCard);
 		allCards.add(southAfricaCard);
@@ -290,11 +297,7 @@ class Match implements Serializable {
 		unclaimedTerritoryCards.addLast(perthCard);
 		allCards.add(perthCard);
 		
-		for (int i = 0; i < JOKER_CARDS_COUNT; ++i) {
-			TerritoryCard card = new TerritoryCard(allCards.size(), "Carta coringa.", Geometry.Joker, null);
-			unclaimedTerritoryCards.addLast(card);
-			allCards.add(card);
-		}
+		
 	}
 	
 	private void distributeGlobalSoldiersToPlayers() {
