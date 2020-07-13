@@ -208,8 +208,9 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 		
 		File file = fc.getSelectedFile();
 		
+		
 		if (!file.getName().endsWith(".warsave")) {
-			file.renameTo(new File(file.getPath() + ".warsave"));
+			file = new File(file.getPath() + ".warsave");
 		}
 		
 		if (retVal == JFileChooser.APPROVE_OPTION) {
