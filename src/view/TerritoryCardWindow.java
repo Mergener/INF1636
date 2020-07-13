@@ -94,6 +94,7 @@ public class TerritoryCardWindow extends Window {
 		}
 		
 		String ret = String.format("../images/war_carta_%s_%s.png",c, s);
+		
 		return ret;
 	}
 	
@@ -153,7 +154,15 @@ public class TerritoryCardWindow extends Window {
 		
 		for(int i = 0; i < playerCardIds.length; ++i) {
 			System.out.printf("%d\n", playerCardIds[i]);
-			CardPanel cardPanel = new CardPanel(contentPane, playerCardIds[i],generateImagePath(controller.getWarGame().getTerritoryCardTerritory(playerCardIds[i])));
+			CardPanel cardPanel;
+			
+			if(controller.getWarGame().isTerritoryCardJoker(playerCardIds[i])) {
+				cardPanel = new CardPanel(contentPane,playerCardIds[i],"../images/war_carta_coringa.png");
+			}
+			else {
+				cardPanel = new CardPanel(contentPane, playerCardIds[i],generateImagePath(controller.getWarGame().getTerritoryCardTerritory(playerCardIds[i])));
+			}
+			
 			cardPanels.add(cardPanel);
 		}
 		
