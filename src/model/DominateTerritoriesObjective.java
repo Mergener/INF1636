@@ -20,19 +20,13 @@ class DominateTerritoriesObjective implements IObjective {
 
 	@Override
 	public boolean isComplete(Player p, World w) {
-		int amtOwned = 0; // Number of target territories that have already been owned.
-		
-		for (Continent c : w.getContinents()) {
-			for (Territory t1 : c.getTerritories()) {
-				for (Territory t2 : targets) {
-					if (t1 == t2) {
-						amtOwned++;
-					}
-				}
+		for (Territory t : targets) {
+			if (t.getOwner() != p) {
+				return false;
 			}
 		}
-		
-		return amtOwned == targets.length;
+
+		return true;
 	}
 
 	public DominateTerritoriesObjective(Territory[] targets) {

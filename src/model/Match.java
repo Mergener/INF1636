@@ -433,6 +433,8 @@ class Match implements Serializable {
 					player.addTerritoryCard(c);
 					opponent.removeTerritoryCard(c);
 				}
+				
+				opponent.setNemesis(player);
 			}
 			
 			opponentColor = opponent.getColor();

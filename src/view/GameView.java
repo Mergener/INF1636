@@ -225,9 +225,8 @@ public class GameView extends View implements ICurrentPlayerChangeListener, IAtt
 					JOptionPane.showMessageDialog(getWindow().getFrame(), String.format("Não foi possível criar o arquivo requisitado:\n%s", e.getMessage()));
 				}
             }
-        }
-		
-		finishSave(file);
+    		finishSave(file);
+        }		
 	}
 	
 	private void finishSave(File file) {		
